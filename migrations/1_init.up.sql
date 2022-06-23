@@ -10,6 +10,7 @@ CREATE TABLE users(
     family_list TEXT NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT CURRENT_TIMESTAMP,
+    is_attend boolean NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id)
 );
 
@@ -33,7 +34,6 @@ CREATE TABLE user_events (
     id int NOT NULL AUTO_INCREMENT,
     user_id int NOT NULL,
     sub_event_id int NOT NULL,
-    is_attend boolean NOT NULL DEFAULT FALSE,
     child_name VARCHAR(100),
     PRIMARY KEY (id)
 );
