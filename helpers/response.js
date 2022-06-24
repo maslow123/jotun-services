@@ -2,15 +2,10 @@
 
 /* Success Response */
 exports.success = (res, value, total = 0, page = 1, limit = 10) => {
-  const result = {
-    status: {
-      code: 200,
-      message: 'success'
-    },
-    result: value,
-    total,
-    page,
-    limit
+  const result = {    
+    code: 200,
+    message: 'success',
+    results: value,
   };
   res.status(200).json(result);
   res.end();
@@ -48,14 +43,14 @@ exports.falseRequirement = (res, field, message = undefined) => {
 
 exports.loginFailed = res => {
   res.status(401).send({
-    status: 401,
+    code: 401,
     message: 'Incorrect username or password'
   });
 };
 
 exports.loginSuccess = (res, rows, token) => {
   res.status(200).send({
-    status: 200,
+    code: 200,
     data: rows,
     token: token
   });

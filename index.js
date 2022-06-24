@@ -9,10 +9,16 @@ app.use(express.json());
 app.use(logger('dev'));
 
 const users = require('./routes/users');
+const events = require('./routes/events');
+const sub_events = require('./routes/sub-events');
+const user_events = require('./routes/user-events');
 
 // ROUTES
 const prefix = '/api/v1/';
 app.use(`${prefix}`, users);
+app.use(`${prefix}`, events);
+app.use(`${prefix}`, sub_events);
+app.use(`${prefix}`, user_events);
 
 const HTTP_PORT = process.env.HTTP_PORT;
 

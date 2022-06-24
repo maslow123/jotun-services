@@ -11,13 +11,7 @@ exports.uploadImage = async (base64Image, userId) => {
     const response = await imageKit.upload({
         file: base64Image,
         fileName: `user-${userId}.jpg`,
-        extensions: [
-            {
-                name: "google-auto-tagging",
-                maxTags: 5,
-                minConfidence: 95
-            }
-        ]
+        isPrivateFile: false
     });
 
     return response;

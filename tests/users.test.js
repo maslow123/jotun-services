@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../index.js');
 describe('Users API', () => {
+    let userPass = '';
     it('should create user', async () => {  
         const slug = `/api/v1/user/register`;
         const payload = {
@@ -11,7 +12,7 @@ describe('Users API', () => {
             transportation: '',
             level: 1,
             family_list: ''
-        }     
+        };     
         res = await request.agent(app)
                         .post(slug)
                         .send(payload);
@@ -63,5 +64,48 @@ describe('Users API', () => {
         resBody = res.body; 
         expect(resBody.code).toEqual(201);
         expect(resBody.message).toEqual('data successfully created');
+        
+        userPass = resBody.data.password;
+    });
+
+    it('should login user', async () => {  
+        const slug = `/api/v1/user/login`;
+        const payload = {
+            phone_number: '', 
+            password: ''
+        };     
+        res = await request.agent(app)
+                        .post(slug)
+                        .send(payload);
+        resBody = res.body;
+        // invalid field
+        expect(res.statusCode).toEqual(500);
+        expect(resBody.message).toEqual('invalid-phone_number');
+        
+        payload.phone_number = '0878111111111';
+        res = await request.agent(app)
+                        .post(slug)
+                        .send(payload);
+        resBody = res.body; 
+        expect(resBody.message).toEqual('invalid-password');
+        
+        // Sucess Login
+        payload.password = userPass;
+        res = await request.agent(app)
+                        .post(slug)
+                        .send(payload);
+                        
+        resBody = res.body; 
+        expect(resBody.code).toEqual(200);
+
+        // Wrong password
+        payload.password = 'wrong password';
+        res = await request.agent(app)
+                        .post(slug)
+                        .send(payload);
+                        
+        resBody = res.body; 
+        expect(resBody.code).toEqual(401);
+
     });
 });

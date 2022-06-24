@@ -2,7 +2,7 @@ require('dotenv').config();
 const Vonage = require('@vonage/server-sdk');
 const WhatsAppImage = require('@vonage/server-sdk/lib/Messages/WhatsAppImage');
 
-exports.sendWhatsappMessage = async (imageURL) => {    
+exports.sendWhatsappMessage = async (imageURL, to, from) => {    
     const nexmo = new Vonage({
         apiKey: process.env.NEXMO_API_KEY,
         apiSecret: process.env.NEXMO_API_SECRET,
@@ -12,8 +12,15 @@ exports.sendWhatsappMessage = async (imageURL) => {
         apiHost: process.env.NEXMO_API_HOST
       }
     );
-
-    const data = await nexmo.messages.send(new WhatsAppImage({ url: imageURL }, '6287803824644', '14157386102'));
-    return data;
+    const caption = 'Simple caption';
+    return new Promise((resolve, reject) => {
+      nexmo.messages.send(
+        new WhatsAppImage({ url: imageURL, caption }, to, from),
+        (err, d) => {
+          if (err) { return reject(err) }
+          return resolve(d)
+        }
+      );
+    })
 };
 

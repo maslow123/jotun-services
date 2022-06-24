@@ -1,10 +1,8 @@
 require('dotenv').config();
-const QRCode = require('qrcode');
-const jwt = require('jsonwebtoken');
 const User = require('../models/user').default;
+const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword } = require('../helpers');
 const response = require('../helpers/response');
-const storeImage = require('../helpers/store-image');
-const { sendWhatsappMessage } = require('../helpers/send-message');
+const jwt = require('jsonwebtoken');
 
 const createUser = async (req, res) => {
     try {        
@@ -38,37 +36,52 @@ const createUser = async (req, res) => {
             // generate QR Code
             const QRImageURL = await generateQRCode(phone_number, name);
             // store to image bucket
-            const imageResp = await storeImage.uploadImage(QRImageURL, user.id);
+            const imageResp = await uploadImage(QRImageURL, user.id);
             // send QR to whatsapp number
-            await sendWhatsappMessage(imageResp.url);
+            const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
+            const to = `${process.env.WHATSAPP_TO_NUMBER}`;
+            await sendWhatsappMessage(imageResp.url, to, from);
         }
         return response.upsert(res, user, 'created');
     } catch (error) {
         console.error(error);
         response.internalError(res, error.message);
     }
-}
+};
 
-const generateQRCode = async (phone_number, name) => {
-    const opts = {
-        errorCorrectionLevel: 'H',
-        type: 'terminal',
-        quality: 0.95,
-        margin: 1,
-        color: {
-         dark: '#208698',
-         light: '#FFF',
-        },
-    }
-    const encryptedData = jwt.sign(
-        { phone_number, name },
-        process.env.JWT_SECRET,
-        { expiresIn: '1d' }
-    );
+const loginUser = async (req, res) => {
+    try {
+        const { phone_number, password } = req.body;
+
+        if(!phone_number) {
+            return response.falseRequirement(res, 'phone_number');
+        }
+        if(!password) {
+            return response.falseRequirement(res, 'password');
+        }
+
+        const user = new User('', '', phone_number, password);
+        const result = await user.login();
+        if(!result) {
+            return response.loginFailed(res);
+        }
+
+        const isValidPassword = await comparePassword(password, user.password);
+        if (!isValidPassword) {
+            return response.loginFailed(res);
+        }
+
         
-    return await QRCode.toDataURL(encryptedData, opts);
+        const token = jwt.sign({ data: user }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        return response.loginSuccess(res, user, token);
 
+
+    } catch(error) {        
+        console.error(error);
+        response.internalError(res, error.message);
+    }
 }
 module.exports = {
-    createUser
+    createUser,
+    loginUser
 };
