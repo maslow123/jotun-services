@@ -3,9 +3,11 @@ const conn = require('./index');
 
 exports.default = class UserEvent extends DBTable {
     constructor(
+        user_id = '',
         data = []
     ) {
         super();
+        this.user_id = user_id;
         this.data = data;
     }
 
@@ -19,7 +21,7 @@ exports.default = class UserEvent extends DBTable {
                 preparedStatement += `, `;
             }
             preparedStatement += `(?, ?, ?)`;
-            args = [...args, row.user_id, row.sub_event_id, row.child_name];
+            args = [...args, this.user_id, row.sub_event_id, row.child_name];
             
             counter++;
         }

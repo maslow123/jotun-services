@@ -39,7 +39,7 @@ exports.default = class User extends DBTable {
                     (?, ?, ?, ?, ?, ?, ?, ?, ?);
                 `;
 
-        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.transportation, this.level, `[${this.family_list}]`, this.qr_code_url]);
+        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.transportation, this.level, `${this.family_list}`, this.qr_code_url]);
         this.id = rows.insertId;
     };
 
@@ -72,5 +72,50 @@ exports.default = class User extends DBTable {
             return true;
         }
         return false
-    }
+    };
+
+    checkValidChildren = async (data) => {
+        const q = `SELECT family_list FROM users WHERE id = ?`;
+        const [rows] = await conn.query(q, [this.id]);
+    
+        if (rows.length < 0) {
+            return [];
+        }
+        const row = rows[0];
+        let family = row.family_list.split(',');
+        const children = family.splice(1, family.length - 1); // remove mothers
+        let childrenRegistered = [];
+
+        // if child registration > child registered = false
+        if (data.length > children) {
+            return [];
+        }
+
+        // only 1 child for 1 sub event
+        const hasDuplicate = (arrayObj, colName) => {
+            var hash = Object.create(null);
+            return arrayObj.some((arr) => {
+               return arr[colName] && (hash[arr[colName]] || !(hash[arr[colName]] = true));
+            });
+        };
+        if (hasDuplicate(data, 'child_name')) {
+            return [];
+        }
+
+        // check children is valid or not
+        for(let d of data) {
+            for (let child of children) {
+                if ((d.child_name.toUpperCase() === child.toUpperCase()) && !(childrenRegistered.includes(d.child_name))) {
+                    childrenRegistered = [...childrenRegistered, child]
+                }
+            }
+        }
+        
+        if (childrenRegistered.length < 1 || (childrenRegistered.length > children.length)) {
+            return [];
+        }
+        
+        data = data.filter(d => childrenRegistered.includes(d.child_name));
+        return data;
+    };
 }
