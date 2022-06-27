@@ -13,6 +13,7 @@ exports.default = class User extends DBTable {
         transportation = '',
         level = 0,
         family_list = '',
+        qr_code_url = '',
         created_at = 0,
         updated_at = 0
     ) {
@@ -25,6 +26,7 @@ exports.default = class User extends DBTable {
         this.transportation = transportation;
         this.level = level;
         this.family_list = family_list;
+        this.qr_code_url = qr_code_url;
     }
 
     create = async () => {
@@ -32,12 +34,12 @@ exports.default = class User extends DBTable {
         this.password = password;
         const q = `
                     INSERT INTO users 
-                    (name, phone_number, password, department, branches, transportation, level, family_list) 
+                    (name, phone_number, password, department, branches, transportation, level, family_list, qr_code_url) 
                     VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?);
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?);
                 `;
 
-        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.transportation, this.level, `[${this.family_list}]`]);
+        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.transportation, this.level, `[${this.family_list}]`, this.qr_code_url]);
         this.id = rows.insertId;
     };
 
@@ -59,4 +61,16 @@ exports.default = class User extends DBTable {
         }
         return true;
     };
+
+    userAlreadyExists = async () => {
+        const q = `
+            SELECT COUNT(phone_number) count FROM users WHERE phone_number = ?
+        `;
+
+        const [data] = await conn.query(q, [this.phone_number]);        
+        if (data[0].count > 0) {
+            return true;
+        }
+        return false
+    }
 }

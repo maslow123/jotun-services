@@ -28,7 +28,10 @@ exports.generateInvitation = async ({
         },
     ];
     const invitationPath = `${__dirname}/../assets/invitations/${filename}`;
-    loadImage(`${__dirname}/../assets/templates/invitation.png`)
+    const invitationTemplate = `${__dirname}/../assets/templates/invitation.png`;
+    
+    
+    await loadImage(invitationTemplate)
     .then(async image => {
         context.drawImage(image, 0, 0, 1200, 1400)
         let counter = 1;

@@ -11,6 +11,7 @@ CREATE TABLE users(
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT CURRENT_TIMESTAMP,
     is_attend boolean NOT NULL DEFAULT FALSE,
+    qr_code_url TEXT NOT NULL,
     PRIMARY KEY (id)
 );
 

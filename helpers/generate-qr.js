@@ -10,10 +10,10 @@ exports.generateQRCode = async (phone_number, name) => {
         { expiresIn: '1d' }
     );
     
-    const filename = path.join(`${process.cwd()}/assets/qr-code/`, `${phone_number}.png`)
+    const filePath = path.join(`${process.cwd()}/assets/qr-code/`, `${phone_number}.png`)
     return new Promise((resolve, reject) => {
         QRCode.toFile(
-            filename,
+            filePath,
             encryptedData,
             {
                 width: 200,
@@ -22,7 +22,10 @@ exports.generateQRCode = async (phone_number, name) => {
             err => {
              if (err) return reject(err)
              console.log(`success`, '✓ Okay, Has successfully generate & save your qrcode.');
-             return resolve(`${phone_number}.png`);
+             return resolve({
+                filename: `${phone_number}.png`,
+                filePath
+             });
             }
         )
     })
