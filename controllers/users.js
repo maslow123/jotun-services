@@ -1,8 +1,9 @@
 require('dotenv').config();
 const User = require('../models/user').default;
-const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword } = require('../helpers');
+const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation } = require('../helpers');
 const response = require('../helpers/response');
 const jwt = require('jsonwebtoken');
+const fs = require('fs')
 
 const createUser = async (req, res) => {
     try {        
@@ -34,13 +35,17 @@ const createUser = async (req, res) => {
         await user.create();
         if (process.env.NODE_ENV !== 'test') {
             // generate QR Code
-            const QRImageURL = await generateQRCode(phone_number, name);
+            const filename = await generateQRCode(phone_number, name);
+            // generate invitation
+            const invitationPath = await generateInvitation({ name, department, branches }, filename);
+            const imageBase64 = fs.readFileSync(invitationPath, 'base64');
             // store to image bucket
-            const imageResp = await uploadImage(QRImageURL, user.id);
-            // send QR to whatsapp number
+            const imageResp = await uploadImage(imageBase64, user.id);
+            // send whatsapp
             const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
             const to = `${process.env.WHATSAPP_TO_NUMBER}`;
-            await sendWhatsappMessage(imageResp.url, to, from);
+
+            await sendWhatsappMessage(imageResp.url, to, from)            
         }
         return response.upsert(res, user, 'created');
     } catch (error) {
@@ -80,7 +85,8 @@ const loginUser = async (req, res) => {
         console.error(error);
         response.internalError(res, error.message);
     }
-}
+};
+
 module.exports = {
     createUser,
     loginUser
