@@ -25,7 +25,7 @@ const createUser = async (req, res) => {
         if(!transportation) {
             return response.falseRequirement(res, 'transportation');
         }
-        if(!level) {
+        if(level === '' || level === undefined) {
             return response.falseRequirement(res, 'level');
         }
         if(!family_list || family_list.length < 1) {
