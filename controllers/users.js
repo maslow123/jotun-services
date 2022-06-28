@@ -2,6 +2,7 @@ require('dotenv').config();
 const User = require('../models/user').default;
 const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation } = require('../helpers');
 const response = require('../helpers/response');
+const constants = require('../helpers/constants');
 const jwt = require('jsonwebtoken');
 const fs = require('fs')
 
@@ -42,15 +43,18 @@ const createUser = async (req, res) => {
         if (process.env.NODE_ENV !== 'test') {
             // generate QR Code
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
-            // store image bucket
+            
+            // store qr image to bucket
             const qrImageBase64 = fs.readFileSync(qrFilePath, 'base64');            
             const qrImage = await uploadImage(qrImageBase64, `qr-${phone_number}`);
             qrCodeURL = qrImage.url;
+            
             // generate invitation
             const invitationPath = await generateInvitation({ name, department, branches }, filename);
             const invitationImageBase64 = fs.readFileSync(invitationPath, 'base64');
-            // store to image bucket
+            // store e-invitation to bucket
             const invitationImage = await uploadImage(invitationImageBase64, phone_number);
+            
             // send whatsapp
             const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
             const to = `${process.env.WHATSAPP_TO_NUMBER}`;
@@ -103,7 +107,42 @@ const loginUser = async (req, res) => {
     }
 };
 
+const qrValidate = async (req, res) => {
+    try {        
+        const { key } = req.query;
+        if (!key) {
+            return response.falseRequirement(res, 'key');
+        }
+
+        // decoded jwt to get user data
+        const decoded = jwt.verify(key, process.env.JWT_SECRET);
+        if (!decoded) {
+            return response.falseRequirement(res, 'key');
+        }
+        const { phone_number, name } = decoded;
+        // check user is attend or not
+        const user = new User('', '', phone_number);
+        const rows = await user.checkUserAttend();
+        if (rows.length < 1) {
+            return response.notFound(res);
+        }
+
+        const row = rows[0];
+        //  update attend status
+        if (row.is_attend < 1) {
+            await user.updateUserAttend(!row.is_attend)
+        } 
+        // check is_attend status  
+        return response.success(res, constants.ATTEND(name, row.is_attend));
+
+    } catch(error) {
+        console.error(error);
+        response.internalError(res, error.message);
+    }
+}
+
 module.exports = {
     createUser,
-    loginUser
+    loginUser,
+    qrValidate
 };

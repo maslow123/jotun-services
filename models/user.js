@@ -45,7 +45,7 @@ exports.default = class User extends DBTable {
 
     login = async () => {
         const q = `
-            SELECT id, name, phone_number, password, department, branches, transportation, level, family_list
+            SELECT id, name, phone_number, password, department, branches, transportation, level, family_list, qr_code_url
             FROM users
             WHERE phone_number = ?
         `;
@@ -118,4 +118,19 @@ exports.default = class User extends DBTable {
         data = data.filter(d => childrenRegistered.includes(d.child_name));
         return data;
     };
+
+    checkUserAttend = async () => {
+        const q = `SELECT is_attend FROM users WHERE phone_number = ?`;
+        const [rows] = await conn.query(q, [this.phone_number]);
+        if (rows.length < 1) {
+            return [];
+        }
+
+        return rows;
+    }
+
+    updateUserAttend = async (isAttend) => {
+        const q = `UPDATE users SET is_attend = ? WHERE phone_number = ?`;
+        await conn.query(q, [isAttend, this.phone_number]);
+    }
 }

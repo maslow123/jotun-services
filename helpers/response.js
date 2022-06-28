@@ -1,7 +1,7 @@
 'use strict';
 
 /* Success Response */
-exports.success = (res, value, total = 0, page = 1, limit = 10) => {
+exports.success = (res, value) => {
   const result = {    
     code: 200,
     message: 'success',
