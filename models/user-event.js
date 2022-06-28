@@ -35,4 +35,21 @@ exports.default = class UserEvent extends DBTable {
 
         await conn.query(q, [...args]);
     };  
+
+    checkChildrenRegistered = async () => {        
+        const children = this.data.map(d => d.child_name);
+        const ids = `('${children.join("','")}')`;
+
+        const q = `
+            SELECT COUNT(1) count 
+            FROM user_events
+            WHERE user_id = ? AND child_name IN ${ids}
+        `;
+
+        const [data] = await conn.query(q, this.user_id);
+        if (data[0].count > 0) {
+            return true;
+        }
+        return false;
+    };
 }

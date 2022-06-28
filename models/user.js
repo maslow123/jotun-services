@@ -75,7 +75,7 @@ exports.default = class User extends DBTable {
     };
 
     checkValidChildren = async (data) => {
-        const q = `SELECT family_list FROM users WHERE id = ?`;
+        let q = `SELECT family_list FROM users WHERE id = ?`;
         const [rows] = await conn.query(q, [this.id]);
     
         if (rows.length < 0) {
@@ -83,7 +83,7 @@ exports.default = class User extends DBTable {
         }
         const row = rows[0];
         let family = row.family_list.split(',');
-        const children = family.splice(1, family.length - 1); // remove mothers
+        const children = family.splice(1, family.length - 1); // only get children
         let childrenRegistered = [];
 
         // if child registration > child registered = false

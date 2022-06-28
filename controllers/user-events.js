@@ -18,8 +18,12 @@ const createUserEvent = async (req, res) => {
         if (!validChildren || validChildren.length < 1) {
             return response.falseRequirement(res, 'children');
         }
-
         const user_event = new UserEvent(req.user_id, validChildren);
+
+        const childrenRegistered = await user_event.checkChildrenRegistered();
+        if (childrenRegistered) {
+            return response.error(res, 'children-already-registered');
+        }
         await user_event.create();       
 
         const listSubEventID = data.map(row => row.sub_event_id);
@@ -27,6 +31,7 @@ const createUserEvent = async (req, res) => {
         // update slots user_events
         const sub_event = new SubEvent();
         await sub_event.updateSlots(listSubEventID);
+
         return response.upsert(res, user_event, 'created');
     } catch (error) {
         console.error(error);
