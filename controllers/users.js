@@ -76,26 +76,26 @@ const createUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { phone_number, password } = req.body;
+        const { phone_number } = req.body;
 
         if(!phone_number) {
             return response.falseRequirement(res, 'phone_number');
         }
-        if(!password) {
-            return response.falseRequirement(res, 'password');
-        }
+        // if(!password) {
+        //     return response.falseRequirement(res, 'password');
+        // }
 
-        const user = new User('', '', phone_number, password);
+        const user = new User('', '', phone_number);
         const result = await user.login();
         if(!result) {
             return response.loginFailed(res);
         }
 
-        const isValidPassword = await comparePassword(password, user.password);
-        if (!isValidPassword) {
-            return response.loginFailed(res);
-        }
-
+        // const isValidPassword = await comparePassword(password, user.password);
+        // if (!isValidPassword) {
+        //     return response.loginFailed(res);
+        // }
+        
         
         const token = jwt.sign({ data: user }, process.env.JWT_SECRET, { expiresIn: '1h' });
         return response.loginSuccess(res, user, token);
