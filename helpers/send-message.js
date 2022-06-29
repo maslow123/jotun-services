@@ -1,26 +1,25 @@
 require('dotenv').config();
-const Vonage = require('@vonage/server-sdk');
-const WhatsAppImage = require('@vonage/server-sdk/lib/Messages/WhatsAppImage');
+const axios = require('axios').default;
 
 exports.sendWhatsappMessage = async (imageURL, to, from) => {    
-    const nexmo = new Vonage({
-        apiKey: process.env.NEXMO_API_KEY,
-        apiSecret: process.env.NEXMO_API_SECRET,
-        applicationId: process.env.NEXMO_APPLICATION_ID,
-        privateKey: `${__dirname}${process.env.NEXMO_PRIVATE_KEY_PATH}`,
-      }, {
-        apiHost: process.env.NEXMO_API_HOST
+  const domain = process.env.WABLAS_DOMAIN;
+  
+  let bodyFormData = new URLSearchParams();
+  bodyFormData.append('phone', '6285880525153');
+  bodyFormData.append('caption', 'Ini QR mu');
+  bodyFormData.append('image', imageURL);
+
+  try {
+    const resp = await axios.post(`${domain}/api/send-image`, bodyFormData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': process.env.WABLAS_API_KEY
       }
-    );
-    const caption = 'Simple caption';
-    return new Promise((resolve, reject) => {
-      nexmo.messages.send(
-        new WhatsAppImage({ url: imageURL, caption }, to, from),
-        (err, d) => {
-          if (err) { return reject(err) }
-          return resolve(d)
-        }
-      );
-    })
+    });
+    return resp
+  } catch(err) {
+    console.log(err);
+    throw new Error(err);
+  }
 };
 
