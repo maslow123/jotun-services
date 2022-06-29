@@ -1,18 +1,44 @@
 require('dotenv').config();
-const ImageKit = require('imagekit');
+// const ImageKit = require('imagekit');
+const OSS = require('ali-oss')
 
-exports.uploadImage = async (base64Image, userId) => {
-    const imageKit = new ImageKit({
-        publicKey: process.env.IMAGEKIT_PUB_KEY,
-        privateKey: process.env.IMAGEKIT_PRI_KEY,
-        urlEndpoint: process.env.IMAGEKIT_URL
+const AliOssClient = () => {
+    if (!(this instanceof AliOssClient)) {
+        return new AliOssClient();
+    }
+
+    this.client = new OSS({
+        accessKeyId: process.env.ALIBABA_CLOUD_ACCESS_KEY_ID,
+        accessKeySecret: process.env.ALIBABA_CLOUD_ACCESS_KEY_SECRET,
+        bucket: 'jotun-app',
+        region: process.env.ALIBABA_CLOUD_REGION
     });
+};
 
-    const response = await imageKit.upload({
-        file: base64Image,
-        fileName: `user-${userId}.jpg`,
-        isPrivateFile: false
+AliOssClient.prototype.uploadObject = async function (objectKey, file, options) {
+    return await this.client.put(objectKey, file, options);
+};
+
+AliOssClient.prototype.uploadStreamObject = async function (objectKey, file, options = {}) {
+    _.defaults(options, {
+      useChunkedEncoding: true,
     });
+  
+    const stream = fs.createReadStream(file);
+  
+    if (options.useChunkedEncoding) {
+      return await this.client.putStream(objectKey, stream, options);
+    } else {
+      const size = fs.statSync(file).size;
+  
+      return await this.client.putStream(objectKey, stream, _.assign(options, { contentLength: size }));
+    }
+};
 
-    return response;
+exports.uploadImage = async (filePath) => {
+    const ossClient = new AliOssClient();
+    // ossClient.uploadObject('image.png', `${__dirname}/../assets/qr-code/${phoneNumber}.png`);
+    const resp = await ossClient.uploadStreamObject('image.png', filePath);
+    return resp;
+
 };

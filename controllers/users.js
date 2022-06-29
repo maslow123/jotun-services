@@ -45,21 +45,23 @@ const createUser = async (req, res) => {
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
             
             // store qr image to bucket
-            const qrImageBase64 = fs.readFileSync(qrFilePath, 'base64');            
-            const qrImage = await uploadImage(qrImageBase64, `qr-${phone_number}`);
-            qrCodeURL = qrImage.url;
+            const qrImage = await uploadImage(qrFilePath);
+            console.log({ qrImage });
+            // qrCodeURL = qrImage.url;
             
-            // generate invitation
-            const invitationPath = await generateInvitation({ name, department, branches }, filename);
-            const invitationImageBase64 = fs.readFileSync(invitationPath, 'base64');
-            // store e-invitation to bucket
-            const invitationImage = await uploadImage(invitationImageBase64, phone_number);
-            console.log({ invitationImage });
-            // send whatsapp
-            const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
-            const to = `${process.env.WHATSAPP_TO_NUMBER}`;
+            // // generate invitation
+            // const invitationPath = await generateInvitation({ name, department, branches }, filename);
+            // const invitationImageBase64 = fs.readFileSync(invitationPath, 'base64');
+            // // store e-invitation to bucket
+            // const invitationImage = await uploadImage(invitationImageBase64, phone_number);
+            // console.log({ invitationImage });
+            
+            
+            // // send whatsapp
+            // const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
+            // const to = `${process.env.WHATSAPP_TO_NUMBER}`;
 
-            await sendWhatsappMessage(invitationImage.url, to, from)            
+            // await sendWhatsappMessage(invitationImage.url, to, from)            
         }
         if (process.env.NODE_ENV === 'test') {
             qrCodeURL = 'dummy_url.png';
