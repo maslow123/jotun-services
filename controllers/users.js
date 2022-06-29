@@ -45,16 +45,15 @@ const createUser = async (req, res) => {
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
             
             // store qr image to bucket
-            const qrImageBase64 = fs.readFileSync(qrFilePath, 'base64');            
-            const qrImage = await uploadImage(qrImageBase64, `qr-${phone_number}`);
+            const qrImage = await uploadImage(qrFilePath, filename);
             qrCodeURL = qrImage.url;
             
             // generate invitation
-            const invitationPath = await generateInvitation({ name, department, branches }, filename);
-            const invitationImageBase64 = fs.readFileSync(invitationPath, 'base64');
+            const fileNameInvitation = `inv-${phone_number}.png`;
+            const invitationPath = await generateInvitation({ name, department, branches, phone_number });
             // store e-invitation to bucket
-            const invitationImage = await uploadImage(invitationImageBase64, phone_number);
-            console.log({ invitationImage });
+            const invitationImage = await uploadImage(invitationPath, fileNameInvitation);
+                        
             // send whatsapp
             const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
             const to = `${process.env.WHATSAPP_TO_NUMBER}`;

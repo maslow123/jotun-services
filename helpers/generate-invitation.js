@@ -2,8 +2,8 @@ const fs = require('fs')
 const { createCanvas, loadImage } = require('canvas')
 
 exports.generateInvitation = async ({
-    name, department, branches
-}, filename) => {
+    name, department, branches, phone_number
+}) => {
     const width = 1200
     const height = 1400
 
@@ -27,7 +27,7 @@ exports.generateInvitation = async ({
             value: branches
         },
     ];
-    const invitationPath = `${__dirname}/../assets/invitations/${filename}`;
+    const invitationPath = `${__dirname}/../assets/invitations/inv-${phone_number}.png`;
     const invitationTemplate = `${__dirname}/../assets/templates/invitation.png`;
     
     
@@ -50,7 +50,7 @@ exports.generateInvitation = async ({
         }
 
         // load QR Code
-        await loadImage(`${__dirname}/../assets/qr-code/${filename}`)
+        await loadImage(`${__dirname}/../assets/qr-code/qr-${phone_number}.png`)
         .then(async img => {
             context.drawImage(img, 800, 880, 300, 300)
         })
@@ -58,7 +58,7 @@ exports.generateInvitation = async ({
         fs.writeFileSync(invitationPath, buffer)
 
         // remove QR File
-        fs.unlinkSync(`${__dirname}/../assets/qr-code/${filename}`);
+        fs.unlinkSync(`${__dirname}/../assets/qr-code/qr-${phone_number}.png`);
     });
     return invitationPath;
 };

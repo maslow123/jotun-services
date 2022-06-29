@@ -1,18 +1,28 @@
 require('dotenv').config();
-const ImageKit = require('imagekit');
+const OSS = require('ali-oss');
+const fs = require('fs')
 
-exports.uploadImage = async (base64Image, userId) => {
-    const imageKit = new ImageKit({
-        publicKey: process.env.IMAGEKIT_PUB_KEY,
-        privateKey: process.env.IMAGEKIT_PRI_KEY,
-        urlEndpoint: process.env.IMAGEKIT_URL
-    });
+class AliOssClient {
+    constructor(){}
+    
+    uploadStreamObject = async function (objectKey, file) {
+        const client = new OSS({
+            accessKeyId: process.env.ALIBABA_CLOUD_ACCESS_KEY_ID,
+            accessKeySecret: process.env.ALIBABA_CLOUD_ACCESS_KEY_SECRET,
+            bucket: process.env.ALIBABA_CLOUD_BUCKET,
+            region: process.env.ALIBABA_CLOUD_REGION,
+            endpoint: process.env.ALIBABA_CLOUD_ENDPOINT
+        });
+      
+        const stream = fs.createReadStream(file);
+        return await client.putStream(objectKey, stream);
+    };
 
-    const response = await imageKit.upload({
-        file: base64Image,
-        fileName: `user-${userId}.jpg`,
-        isPrivateFile: false
-    });
+};
 
-    return response;
+exports.uploadImage = async (filePath, filename) => {
+    const ossClient = new AliOssClient();
+    const resp = await ossClient.uploadStreamObject(filename, filePath);
+    return resp;
+
 };
