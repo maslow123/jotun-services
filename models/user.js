@@ -39,7 +39,8 @@ exports.default = class User extends DBTable {
                     (?, ?, ?, ?, ?, ?, ?, ?, ?);
                 `;
 
-        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.transportation, this.level, `${this.family_list}`, this.qr_code_url]);
+        const familyList = JSON.stringify(this.family_list);
+        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.transportation, this.level, familyList, this.qr_code_url]);
         this.id = rows.insertId;
     };
 
@@ -82,7 +83,7 @@ exports.default = class User extends DBTable {
             return [];
         }
         const row = rows[0];
-        let family = row.family_list.split(',');
+        let family = JSON.parse(row.family_list);
         const children = family.splice(1, family.length - 1); // only get children
         let childrenRegistered = [];
 
@@ -105,8 +106,8 @@ exports.default = class User extends DBTable {
         // check children is valid or not
         for(let d of data) {
             for (let child of children) {
-                if ((d.child_name.toUpperCase() === child.toUpperCase()) && !(childrenRegistered.includes(d.child_name))) {
-                    childrenRegistered = [...childrenRegistered, child]
+                if ((d.child_name.toUpperCase() === child.name.toUpperCase()) && !(childrenRegistered.includes(d.child_name))) {
+                    childrenRegistered = [...childrenRegistered, child.name]
                 }
             }
         }
