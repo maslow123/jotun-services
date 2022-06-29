@@ -5,7 +5,7 @@ exports.sendWhatsappMessage = async (imageURL, to, from) => {
   const domain = process.env.WABLAS_DOMAIN;
   
   let bodyFormData = new URLSearchParams();
-  bodyFormData.append('phone', '6285880525153');
+  bodyFormData.append('phone', '6281901266101');
   bodyFormData.append('caption', 'Ini QR mu');
   bodyFormData.append('image', imageURL);
 

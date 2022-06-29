@@ -34,10 +34,10 @@ const createUser = async (req, res) => {
 
         // check user already exists or no
         let user = new User('', name, phone_number);
-        // const isExists = await user.userAlreadyExists();
-        // if (isExists) {
-        //     return response.error(res, 'phone-number-already-exists')
-        // }
+        const isExists = await user.userAlreadyExists();
+        if (isExists) {
+            return response.error(res, 'phone-number-already-exists')
+        }
         
         let qrCodeURL = '';      
         if (process.env.NODE_ENV !== 'test') {
