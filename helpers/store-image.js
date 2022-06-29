@@ -1,44 +1,28 @@
 require('dotenv').config();
-// const ImageKit = require('imagekit');
-const OSS = require('ali-oss')
+const OSS = require('ali-oss');
+const fs = require('fs')
 
-const AliOssClient = () => {
-    if (!(this instanceof AliOssClient)) {
-        return new AliOssClient();
-    }
+class AliOssClient {
+    constructor(){}
+    
+    uploadStreamObject = async function (objectKey, file) {
+        const client = new OSS({
+            accessKeyId: process.env.ALIBABA_CLOUD_ACCESS_KEY_ID,
+            accessKeySecret: process.env.ALIBABA_CLOUD_ACCESS_KEY_SECRET,
+            bucket: process.env.ALIBABA_CLOUD_BUCKET,
+            region: process.env.ALIBABA_CLOUD_REGION,
+            endpoint: process.env.ALIBABA_CLOUD_ENDPOINT
+        });
+      
+        const stream = fs.createReadStream(file);
+        return await client.putStream(objectKey, stream);
+    };
 
-    this.client = new OSS({
-        accessKeyId: process.env.ALIBABA_CLOUD_ACCESS_KEY_ID,
-        accessKeySecret: process.env.ALIBABA_CLOUD_ACCESS_KEY_SECRET,
-        bucket: 'jotun-app',
-        region: process.env.ALIBABA_CLOUD_REGION
-    });
 };
 
-AliOssClient.prototype.uploadObject = async function (objectKey, file, options) {
-    return await this.client.put(objectKey, file, options);
-};
-
-AliOssClient.prototype.uploadStreamObject = async function (objectKey, file, options = {}) {
-    _.defaults(options, {
-      useChunkedEncoding: true,
-    });
-  
-    const stream = fs.createReadStream(file);
-  
-    if (options.useChunkedEncoding) {
-      return await this.client.putStream(objectKey, stream, options);
-    } else {
-      const size = fs.statSync(file).size;
-  
-      return await this.client.putStream(objectKey, stream, _.assign(options, { contentLength: size }));
-    }
-};
-
-exports.uploadImage = async (filePath) => {
+exports.uploadImage = async (filePath, filename) => {
     const ossClient = new AliOssClient();
-    // ossClient.uploadObject('image.png', `${__dirname}/../assets/qr-code/${phoneNumber}.png`);
-    const resp = await ossClient.uploadStreamObject('image.png', filePath);
+    const resp = await ossClient.uploadStreamObject(filename, filePath);
     return resp;
 
 };
