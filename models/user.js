@@ -78,8 +78,8 @@ exports.default = class User extends DBTable {
     checkValidChildren = async (data) => {
         let q = `SELECT family_list FROM users WHERE id = ?`;
         const [rows] = await conn.query(q, [this.id]);
-    
-        if (rows.length < 0) {
+        console.log({rows});
+        if (rows.length < 1) {
             return [];
         }
         const row = rows[0];
