@@ -44,3 +44,11 @@ CREATE TABLE user_events (
 );
 ALTER TABLE user_events ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 ALTER TABLE user_events ADD FOREIGN KEY (sub_event_id) REFERENCES sub_events(id) ON DELETE CASCADE;
+
+CREATE TABLE confirm_invitation (
+    id int NOT NULL AUTO_INCREMENT,
+    user_id int NOT NULL UNIQUE,
+    counter int NOT NULL DEFAULT 0,
+    time datetime,
+    PRIMARY KEY (id) 
+);

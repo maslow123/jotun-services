@@ -1,5 +1,6 @@
 require('dotenv').config();
 const User = require('../models/user').default;
+const ConfirmInvitation = require('../models/confirm-invitation').default;
 const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation } = require('../helpers');
 const response = require('../helpers/response');
 const constants = require('../helpers/constants');
@@ -37,7 +38,7 @@ const createUser = async (req, res) => {
         }
         
         let qrCodeURL = '';      
-        if (process.env.NODE_ENV !== 'test') {
+        if (process.env.NODE_ENV === 'test') {
             // generate QR Code
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
             
@@ -63,6 +64,10 @@ const createUser = async (req, res) => {
 
         user = new User('', name, phone_number, '', department, branches, 1, family_list, qrCodeURL, 0, 0); 
         await user.create();
+        
+        const confirm_invitation = new ConfirmInvitation('', user.id, phone_number);
+        await confirm_invitation.create();
+        
         return response.upsert(res, user, 'created');
     } catch (error) {
         console.error(error);
