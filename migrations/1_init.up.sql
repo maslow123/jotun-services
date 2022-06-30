@@ -2,6 +2,7 @@ DROP TABLE user_events;
 DROP TABLE sub_events;
 DROP TABLE events;
 DROP TABLE users;
+DROP TABLE confirm_invitation;
 
 CREATE TABLE users(
 	id int NOT NULL AUTO_INCREMENT,
@@ -16,6 +17,7 @@ CREATE TABLE users(
     updated_at datetime DEFAULT CURRENT_TIMESTAMP,
     is_attend boolean NOT NULL DEFAULT FALSE,
     qr_code_url TEXT NOT NULL,
+    invitation_url TEXT NOT NULL,
     PRIMARY KEY (id)
 );
 

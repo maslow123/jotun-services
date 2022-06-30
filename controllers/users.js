@@ -37,8 +37,10 @@ const createUser = async (req, res) => {
             return response.error(res, 'phone-number-already-exists')
         }
         
-        let qrCodeURL = '';      
-        if (process.env.NODE_ENV === 'test') {
+        let qrCodeURL = '';   
+        let invitationURL = '';
+
+        if (process.env.NODE_ENV !== 'test') {
             // generate QR Code
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
             
@@ -51,7 +53,7 @@ const createUser = async (req, res) => {
             const invitationPath = await generateInvitation({ name, department, branches, phone_number });
             // store e-invitation to bucket
             const invitationImage = await uploadImage(invitationPath, fileNameInvitation);
-                        
+            invitationURL = invitationImage.url;
             // send whatsapp
             const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
             const to = `${process.env.WHATSAPP_TO_NUMBER}`;
@@ -62,7 +64,7 @@ const createUser = async (req, res) => {
             qrCodeURL = 'dummy_url.png';
         }
 
-        user = new User('', name, phone_number, '', department, branches, 1, family_list, qrCodeURL, 0, 0); 
+        user = new User('', name, phone_number, '', department, branches, 1, family_list, qrCodeURL, invitationURL, 0, 0); 
         await user.create();
         
         const confirm_invitation = new ConfirmInvitation('', user.id, phone_number);
