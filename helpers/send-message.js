@@ -1,12 +1,13 @@
 require('dotenv').config();
 const axios = require('axios').default;
 
-exports.sendWhatsappMessage = async (imageURL, to, from) => {    
+exports.sendWhatsappMessage = async (imageURL, to, name) => {    
   const domain = process.env.WABLAS_DOMAIN;
   
   let bodyFormData = new URLSearchParams();
-  bodyFormData.append('phone', '6281901266101');
-  bodyFormData.append('caption', 'Ini QR mu');
+  // to = '6281901266101';
+  bodyFormData.append('phone', to);
+  bodyFormData.append('caption', `Halo ${name}. Anda diundang untuk menghadiri JOTUN EVENT 2022 omamaolala.xyz`);
   bodyFormData.append('image', imageURL);
 
   try {

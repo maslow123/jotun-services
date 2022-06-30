@@ -28,7 +28,7 @@ exports.default = class ConfirmInvitation extends DBTable {
     };   
     
     update = async () => {
-        const q = `
+        let q = `
             UPDATE confirm_invitation ci SET counter = counter + 1, time = TIMESTAMPADD(SECOND, 30, NOW())
             WHERE user_id = (SELECT id FROM users WHERE phone_number = ?) and NOW() > time;
         `
@@ -36,6 +36,7 @@ exports.default = class ConfirmInvitation extends DBTable {
         if (rows.affectedRows < 1) {
             return 'Harap tunggu beberapa saat lagi..'
         }
+        
         return 'OK';
     }
 }

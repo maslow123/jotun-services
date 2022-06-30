@@ -1,7 +1,7 @@
 require('dotenv').config();
 const User = require('../models/user').default;
 const ConfirmInvitation = require('../models/confirm-invitation').default;
-const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation } = require('../helpers');
+const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation, normalizedPhoneNumber } = require('../helpers');
 const response = require('../helpers/response');
 const constants = require('../helpers/constants');
 const jwt = require('jsonwebtoken');
@@ -9,7 +9,7 @@ const fs = require('fs')
 
 const createUser = async (req, res) => {
     try {        
-        const { name, phone_number, department, branches, level, family_list } = req.body;  
+        let { name, phone_number, department, branches, level, family_list } = req.body;  
              
         if(!name) {
             return response.falseRequirement(res, 'name');
@@ -30,6 +30,7 @@ const createUser = async (req, res) => {
             return response.falseRequirement(res, 'family_list');
         }
 
+        phone_number = normalizedPhoneNumber(phone_number);
         // check user already exists or no
         let user = new User('', name, phone_number);
         const isExists = await user.userAlreadyExists();
@@ -55,10 +56,9 @@ const createUser = async (req, res) => {
             const invitationImage = await uploadImage(invitationPath, fileNameInvitation);
             invitationURL = invitationImage.url;
             // send whatsapp
-            const from = `${process.env.WHATSAPP_FROM_NUMBER}`;
-            const to = `${process.env.WHATSAPP_TO_NUMBER}`;
+            const to = phone_number;
 
-            await sendWhatsappMessage(invitationImage.url, to, from)            
+            await sendWhatsappMessage(invitationImage.url, to, name)            
         }
         if (process.env.NODE_ENV === 'test') {
             qrCodeURL = 'dummy_url.png';
