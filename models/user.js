@@ -10,7 +10,6 @@ exports.default = class User extends DBTable {
         password = '',
         department = '',
         branches = '',
-        transportation = '',
         level = 0,
         family_list = '',
         qr_code_url = '',
@@ -23,7 +22,6 @@ exports.default = class User extends DBTable {
         this.password = password;
         this.department = department;
         this.branches = branches;
-        this.transportation = transportation;
         this.level = level;
         this.family_list = family_list;
         this.qr_code_url = qr_code_url;
@@ -34,19 +32,19 @@ exports.default = class User extends DBTable {
         this.password = password;
         const q = `
                     INSERT INTO users 
-                    (name, phone_number, password, department, branches, transportation, level, family_list, qr_code_url) 
+                    (name, phone_number, password, department, branches, level, family_list, qr_code_url) 
                     VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                    (?, ?, ?, ?, ?, ?, ?, ?);
                 `;
 
         const familyList = JSON.stringify(this.family_list);
-        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.transportation, this.level, familyList, this.qr_code_url]);
+        const [rows] = await conn.query(q, [this.name, this.phone_number, hashedPassword, this.department, this.branches, this.level, familyList, this.qr_code_url]);
         this.id = rows.insertId;
     };
 
     login = async () => {
         const q = `
-            SELECT id, name, phone_number, password, department, branches, transportation, level, family_list, qr_code_url
+            SELECT id, name, phone_number, password, department, branches, level, family_list, qr_code_url
             FROM users
             WHERE phone_number = ?
         `;

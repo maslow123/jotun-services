@@ -10,7 +10,6 @@ CREATE TABLE users(
     password VARCHAR(100) NOT NULL,
     department VARCHAR(100) NOT NULL,
     branches VARCHAR(100) NOT NULL,
-    transportation VARCHAR(100) NOT NULL,
     level int(1) NOT NULL,
     family_list TEXT NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
