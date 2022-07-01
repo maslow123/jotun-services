@@ -116,3 +116,16 @@ VALUES
 ('Kendaraan Pribadi (Motor)'),
 ('Bus Powder Factory'),
 ('Bus Jotun Plant 2 - JDC');
+
+
+-- OTHER SECTION
+CREATE TABLE schedules (
+    id int NOT NULL AUTO_INCREMENT,
+    description TEXT NOT NULL,
+    date date NOT NULL,
+    time_start time NOT NULL,
+    time_end time NOT NULL,
+    zoom_link text NOT NULL,
+    status boolean DEFAULT false,
+    PRIMARY KEY (id)
+);
