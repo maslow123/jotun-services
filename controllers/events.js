@@ -4,13 +4,16 @@ const response = require('../helpers/response');
 
 const createEvent = async (req, res) => {
     try {        
-        const { name } = req.body;  
+        const { name, category_age } = req.body;  
              
         if(!name) {
             return response.falseRequirement(res, 'name');
+        }     
+        if(!category_age) {
+            return response.falseRequirement(res, 'category_age');
         }            
 
-        let event = new Event('', name);
+        let event = new Event('', name, category_age);
         await event.create();       
         return response.upsert(res, event, 'created');
     } catch (error) {

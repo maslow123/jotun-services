@@ -1,8 +1,14 @@
 DROP TABLE user_events;
 DROP TABLE sub_events;
 DROP TABLE events;
+DROP TABLE family;
 DROP TABLE users;
 DROP TABLE confirm_invitation;
+DROP TABLE master_departments;
+DROP TABLE master_branches;
+DROP TABLE master_transportations;
+DROP TABLE schedules;
+
 
 CREATE TABLE users(
 	id int NOT NULL AUTO_INCREMENT,
@@ -34,6 +40,7 @@ ALTER TABLE family ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASC
 CREATE TABLE events (
     id int NOT NULL AUTO_INCREMENT,
     name VARCHAR (100),
+    category_age VARCHAR(10),
     PRIMARY KEY (id)
 );
 
