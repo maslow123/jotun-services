@@ -3,53 +3,50 @@ const conn = require('./index');
 
 exports.default = class UserEvent extends DBTable {
     constructor(
-        user_id = '',
-        data = []
+        user_id = 0,
+        family_id = 0,
+        sub_event_id = 0
     ) {
         super();
         this.user_id = user_id;
-        this.data = data;
+        this.family_id = family_id;
+        this.sub_event_id = sub_event_id;
     }
 
-    create = async () => {        
-        let preparedStatement = ``;
-        let args = [];
-        let counter = 0;
-
-        for (let row of this.data) {
-            if (counter > 0) {
-                preparedStatement += `, `;
-            }
-            preparedStatement += `(?, ?, ?)`;
-            args = [...args, this.user_id, row.sub_event_id, row.child_name];
-            
-            counter++;
-        }
-
+    create = async () => {               
         const q = `
                     INSERT INTO user_events
-                    (user_id, sub_event_id, child_name) 
+                    (family_id, sub_event_id) 
                     VALUES 
-                    ${preparedStatement}
+                    (?, ?)
                 `;
 
-        await conn.query(q, [...args]);
+        await conn.query(q, [this.family_id, this.sub_event_id]);
     };  
 
-    checkChildrenRegistered = async () => {        
-        const children = this.data.map(d => d.child_name);
-        const ids = `('${children.join("','")}')`;
-
+    checkChildrenRegistered = async () => {   
         const q = `
-            SELECT COUNT(1) count 
-            FROM user_events
-            WHERE user_id = ? AND child_name IN ${ids}
+            SELECT COUNT(1) count
+            FROM user_events ue
+            JOIN family f ON f.id = ue.family_id
+            WHERE f.user_id = ?
+        `;
+        
+        const [rows] = await conn.query(q, [this.user_id]);
+        return rows[0].count;
+    };
+
+    getUserEvent = async () => {
+        const q = `
+            SELECT 
+                f.name, f.age                
+            FROM user_events ue
+            JOIN family f ON f.id = ue.family_id 
+            JOIN users u ON u.id = f.user_id 
+            WHERE u.id = ? AND ue.sub_event_id = ?
         `;
 
-        const [data] = await conn.query(q, this.user_id);
-        if (data[0].count > 0) {
-            return true;
-        }
-        return false;
-    };
+        const [rows] = await conn.query(q, [this.user_id, this.sub_event_id]);
+        return rows;
+    }
 }

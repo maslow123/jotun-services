@@ -23,10 +23,10 @@ exports.upsert = (res, data, message) => {
 
 /* Error Response */
 
-exports.notFound = res => {
+exports.notFound = (res, message = 'No entry found') => {
   const result = {
     code: 404,
-    message: 'No entry found'
+    message: message
   };
   res.status(404).json(result);
   res.end();

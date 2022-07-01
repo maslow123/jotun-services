@@ -56,12 +56,11 @@ ALTER TABLE sub_events ADD FOREIGN KEY (event_id) REFERENCES events(id) ON DELET
 
 CREATE TABLE user_events (
     id int NOT NULL AUTO_INCREMENT,
-    user_id int NOT NULL,
+    family_id int NOT NULL,
     sub_event_id int NOT NULL,
-    child_name VARCHAR(100),
     PRIMARY KEY (id)
 );
-ALTER TABLE user_events ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+ALTER TABLE user_events ADD FOREIGN KEY (family_id) REFERENCES family(id) ON DELETE CASCADE;
 ALTER TABLE user_events ADD FOREIGN KEY (sub_event_id) REFERENCES sub_events(id) ON DELETE CASCADE;
 
 CREATE TABLE confirm_invitation (

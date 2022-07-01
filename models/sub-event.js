@@ -56,5 +56,19 @@ exports.default = class SubEvent extends DBTable {
 
         const result = await conn.query(q);
         return result;
-    }
+    };
+
+    getSubEventByID = async () => {
+        const q = `
+            SELECT 
+                se.id, se.event_id, se.start_time, se.end_time, se.slots,
+                e.category_age, e.name event_name
+            FROM sub_events se
+            JOIN events e ON e.id = se.event_id
+            WHERE se.id = ?
+        `;
+
+        const [rows] = await conn.query(q, [this.id]);
+        return rows;
+    };
 }

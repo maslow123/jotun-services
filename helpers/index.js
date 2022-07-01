@@ -3,7 +3,7 @@ const { uploadImage } = require('./store-image');
 const { generateQRCode } = require('./generate-qr');
 const { generatePassword, comparePassword } = require('./password');
 const { generateInvitation } = require('./generate-invitation');
-const { normalizedPhoneNumber } = require('./functions');
+const { normalizedPhoneNumber, checkAgeIsValid } = require('./functions');
 
 module.exports = { 
     sendWhatsappMessage, 
@@ -12,5 +12,6 @@ module.exports = {
     generatePassword,
     comparePassword,
     generateInvitation,
-    normalizedPhoneNumber
+    normalizedPhoneNumber,
+    checkAgeIsValid
 };
