@@ -13,6 +13,7 @@ const events = require('./routes/events');
 const sub_events = require('./routes/sub-events');
 const user_events = require('./routes/user-events');
 const confirm_invitation = require('./routes/confirm-invitation');
+const master = require('./routes/master');
 
 // ROUTES
 const prefix = '/api/v1/';
@@ -21,6 +22,7 @@ app.use(`${prefix}`, events);
 app.use(`${prefix}`, sub_events);
 app.use(`${prefix}`, user_events);
 app.use(`${prefix}`, confirm_invitation);
+app.use(`${prefix}`, master);
 
 
 const HTTP_PORT = process.env.HTTP_PORT;

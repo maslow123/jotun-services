@@ -9,7 +9,7 @@ const fs = require('fs')
 
 const createUser = async (req, res) => {
     try {        
-        let { name, phone_number, department, branches, level, family_list } = req.body;  
+        let { name, phone_number, department, branches, transportation, level, family_list } = req.body;  
              
         if(!name) {
             return response.falseRequirement(res, 'name');

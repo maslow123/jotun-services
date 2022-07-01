@@ -54,3 +54,55 @@ CREATE TABLE confirm_invitation (
     time datetime,
     PRIMARY KEY (id) 
 );
+
+CREATE TABLE master_departments (
+    id int NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO master_departments
+(name)
+VALUES
+('Decorative Project'),
+('Decorative Retail'),
+('Factory Operations'),
+('Finance & IT'),
+('HR & GA'),
+('Marine'),
+('Marketing'),
+('Powder Sales'),
+('Protective'),
+('Supply Chain & Warehouse'),
+('TSS');
+
+CREATE TABLE master_branches (
+    id int NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO master_branches
+(name)
+VALUES
+('Jakarta & Tangerang'),
+('Pekanbaru'),
+('Palembang'),
+('Makassar'),
+('Medan'),
+('Surabaya'),
+('Batam'),
+('Balikpapan');
+
+CREATE TABLE master_transportations (
+    id int NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+INSERT INTO master_transportations
+(name)
+VALUES
+('Kendaraan Pribadi (Mobil)'),
+('Kendaraan Pribadi (Motor)'),
+('Bus Powder Factory'),
+('Bus Jotun Plant 2 - JDC');
