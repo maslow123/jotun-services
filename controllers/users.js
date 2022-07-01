@@ -1,11 +1,11 @@
 require('dotenv').config();
 const User = require('../models/user').default;
+const Family = require('../models/family').default;
 const ConfirmInvitation = require('../models/confirm-invitation').default;
 const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation, normalizedPhoneNumber } = require('../helpers');
 const response = require('../helpers/response');
 const constants = require('../helpers/constants');
 const jwt = require('jsonwebtoken');
-const fs = require('fs')
 
 const createUser = async (req, res) => {
     try {        
@@ -29,6 +29,12 @@ const createUser = async (req, res) => {
         if(!family_list || family_list.length < 1) {
             return response.falseRequirement(res, 'family_list');
         }
+        if (
+            (branches === constants.BRANCH_CODE.JAKARTA_AND_TANGERANG) &&
+            !transportation
+        ) {
+            return response.falseRequirement(res, 'transportation');
+        }
 
         phone_number = normalizedPhoneNumber(phone_number);
         // check user already exists or no
@@ -41,7 +47,7 @@ const createUser = async (req, res) => {
         let qrCodeURL = '';   
         let invitationURL = '';
 
-        if (process.env.NODE_ENV !== 'test') {
+        if (process.env.NODE_ENV === 'test') {
             // generate QR Code
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
             
@@ -64,9 +70,13 @@ const createUser = async (req, res) => {
             qrCodeURL = 'dummy_url.png';
         }
 
-        user = new User('', name, phone_number, '', department, branches, 1, family_list, qrCodeURL, invitationURL, 0, 0); 
+        
+        user = new User('', name, phone_number, '', department, branches, transportation, 1, qrCodeURL, invitationURL, 0, 0); 
         await user.create();
         
+        const family = new Family('', user.id, family_list);
+        await family.create();
+
         const confirm_invitation = new ConfirmInvitation('', user.id, phone_number);
         await confirm_invitation.create();
         

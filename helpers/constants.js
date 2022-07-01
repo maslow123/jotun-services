@@ -12,12 +12,12 @@ const ATTEND = (name, state) => {
     return status[`${state}`];
 };
 
-const TRANSPORTATION_CODE = {
+const BRANCH_CODE = {
     'JAKARTA_AND_TANGERANG': 1
 };
 
 module.exports = {
     ROLES,
     ATTEND,
-    TRANSPORTATION_CODE
+    BRANCH_CODE
 }

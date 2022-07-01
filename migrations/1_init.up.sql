@@ -9,10 +9,10 @@ CREATE TABLE users(
     name VARCHAR(100) NOT NULL,
     phone_number VARCHAR(13) NOT NULL,
     password VARCHAR(100) NOT NULL,
-    department VARCHAR(100) NOT NULL,
-    branches VARCHAR(100) NOT NULL,
+    department int NOT NULL,
+    branches int NOT NULL,
+    transportation int DEFAULT NULL,
     level int(1) NOT NULL,
-    family_list TEXT NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT CURRENT_TIMESTAMP,
     is_attend boolean NOT NULL DEFAULT FALSE,
@@ -20,6 +20,16 @@ CREATE TABLE users(
     invitation_url TEXT NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE family(
+    id int NOT NULL AUTO_INCREMENT,
+    user_id int NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    age int NOT NULL,
+    status int NOT NULL,
+    PRIMARY KEY (id)
+)
+ALTER TABLE family ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 CREATE TABLE events (
     id int NOT NULL AUTO_INCREMENT,
