@@ -135,3 +135,12 @@ CREATE TABLE schedules (
     status boolean DEFAULT false,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE rewards (
+    id int NOT NULL AUTO_INCREMENT,
+    user_id int NOT NULL,
+    item VARCHAR(100),
+    PRIMARY KEY (id)
+);
+ALTER TABLE rewards ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
