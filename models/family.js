@@ -35,5 +35,16 @@ exports.default = class Family extends DBTable {
                 `;
 
         await conn.query(q, [...args]);
-    };    
+    };   
+    
+    list = async () => {
+        const q = `
+            SELECT id, name, age, status
+            FROM family
+            WHERE user_id = ?
+        `;
+
+        const [rows] = await conn.query(q, this.user_id);
+        return rows;
+    }
 }

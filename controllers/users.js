@@ -89,21 +89,32 @@ const createUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { phone_number } = req.body;
+        let { phone_number } = req.body;
 
         if(!phone_number) {
             return response.falseRequirement(res, 'phone_number');
         }
+        /* 
+            If using password...
+        */
         // if(!password) {
         //     return response.falseRequirement(res, 'password');
         // }
 
+        phone_number = normalizedPhoneNumber(phone_number);
         const user = new User('', '', phone_number);
-        const result = await user.login();
-        if(!result) {
+        const isValid = await user.login();
+        if(!isValid) {
             return response.loginFailed(res);
         }
 
+        const family = new Family('', user.id);
+        const family_list = await family.list();
+
+        user.family = family_list;
+        /* 
+            If using password...
+        */
         // const isValidPassword = await comparePassword(password, user.password);
         // if (!isValidPassword) {
         //     return response.loginFailed(res);
