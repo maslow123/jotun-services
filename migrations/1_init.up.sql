@@ -144,3 +144,13 @@ CREATE TABLE rewards (
 );
 ALTER TABLE rewards ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+CREATE TABLE user_scan_info (    
+    id int NOT NULL AUTO_INCREMENT,
+    user_id int NOT NULL,
+    code varchar(20) NOT NULL,
+    name varchar(100),
+    scan_time datetime,
+    status boolean DEFAULT false,
+    PRIMARY KEY (id)
+);
+ALTER TABLE user_scan_info ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

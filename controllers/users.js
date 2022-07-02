@@ -2,6 +2,7 @@ require('dotenv').config();
 const User = require('../models/user').default;
 const Family = require('../models/family').default;
 const ConfirmInvitation = require('../models/confirm-invitation').default;
+const ScanInfo = require('../models/scan-info').default;
 const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation, normalizedPhoneNumber } = require('../helpers');
 const response = require('../helpers/response');
 const constants = require('../helpers/constants');
@@ -79,6 +80,9 @@ const createUser = async (req, res) => {
 
         const confirm_invitation = new ConfirmInvitation('', user.id, phone_number);
         await confirm_invitation.create();
+
+        const scan_info = new ScanInfo('', user.id);
+        await scan_info.create();
         
         return response.upsert(res, user, 'created');
     } catch (error) {

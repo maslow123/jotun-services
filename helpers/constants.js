@@ -16,8 +16,18 @@ const BRANCH_CODE = {
     'JAKARTA_AND_TANGERANG': 1
 };
 
+const SCAN_CODE = {
+    'KEHADIRAN': 'KEHADIRAN',
+    'SOUVENIR': 'SOUVENIR',
+    'VOUCHER_BERMAIN': 'VOUCHER_BERMAIN',
+    'SNACK': 'SNACK',
+    'PAKET_SEKOLAH': 'PAKET_SEKOLAH',
+    'FOTO_VIDEO': 'FOTO_VIDEO',
+};
+
 module.exports = {
     ROLES,
     ATTEND,
-    BRANCH_CODE
+    BRANCH_CODE,
+    SCAN_CODE
 }
