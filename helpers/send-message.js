@@ -1,3 +1,5 @@
+const { writeLogs } = require('./write-logs');
+
 require('dotenv').config();
 const axios = require('axios').default;
 
@@ -20,7 +22,7 @@ exports.sendWhatsappMessage = async (imageURL, to, name) => {
     return resp
   } catch(err) {
     console.log(err);
-    throw new Error(err);
+    writeLogs(`Error send whatsapp message to ${to}\t[${err.response.data.message}]`);
   }
 };
 
