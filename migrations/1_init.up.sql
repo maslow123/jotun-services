@@ -151,6 +151,7 @@ CREATE TABLE user_scan_info (
     name varchar(100),
     scan_time datetime,
     status boolean DEFAULT false,
+    updated_at datetime default NULL,
     PRIMARY KEY (id)
 );
 ALTER TABLE user_scan_info ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

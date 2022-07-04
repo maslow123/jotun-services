@@ -4,6 +4,7 @@ const { generateQRCode } = require('./generate-qr');
 const { generatePassword, comparePassword } = require('./password');
 const { generateInvitation } = require('./generate-invitation');
 const { normalizedPhoneNumber, checkAgeIsValid } = require('./functions');
+const { writeLogs } = require('./write-logs');
 
 module.exports = { 
     sendWhatsappMessage, 
@@ -13,5 +14,6 @@ module.exports = {
     comparePassword,
     generateInvitation,
     normalizedPhoneNumber,
-    checkAgeIsValid
+    checkAgeIsValid,
+    writeLogs
 };

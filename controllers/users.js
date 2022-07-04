@@ -48,7 +48,7 @@ const createUser = async (req, res) => {
         let qrCodeURL = '';   
         let invitationURL = '';
 
-        if (process.env.NODE_ENV === 'test') {
+        if (process.env.NODE_ENV !== 'test') {
             // generate QR Code
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
             

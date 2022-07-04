@@ -16,6 +16,7 @@ const confirm_invitation = require('./routes/confirm-invitation');
 const master = require('./routes/master');
 const schedules = require('./routes/schedules');
 const rewards = require('./routes/rewards');
+const scan_info = require('./routes/scan-info');
 
 // ROUTES
 const prefix = '/api/v1/';
@@ -27,6 +28,7 @@ app.use(`${prefix}`, confirm_invitation);
 app.use(`${prefix}`, master);
 app.use(`${prefix}`, schedules);
 app.use(`${prefix}`, rewards);
+app.use(`${prefix}`, scan_info);
 
 
 const HTTP_PORT = process.env.HTTP_PORT;

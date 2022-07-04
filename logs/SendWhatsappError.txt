@@ -1,0 +1,6 @@
+
+Senin, 4 Juli 2022 10.50.03 WIB-Error send whatsapp message to llxs
+[Senin, 4 Juli 2022 10.51.22 WIB]:	Error send whatsapp message to xxx
+[Senin, 4 Juli 2022 11.01.21 WIB]:	Error send whatsapp message to 6287803824644
+[Senin, 4 Juli 2022 11.03.11 WIB]:	Error send whatsapp message to 6287803824644	[Request failed with status code 500]
+[Senin, 4 Juli 2022 11.06.34 WIB]:	Error send whatsapp message to 6287803824644	[your package T98ZAG is expired]

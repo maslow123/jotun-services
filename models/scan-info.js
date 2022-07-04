@@ -6,12 +6,14 @@ exports.default = class ScanInfo extends DBTable {
     constructor(
         id = '', 
         user_id = '',
+        code = '',
         name = '',
         scan_time = 0,
         status = 0
     ) {
         super(id);
-        this.user_id = user_id;        
+        this.user_id = user_id;    
+        this.code = code;    
         this.name = name;
         this.scan_time = scan_time;
         this.status = status;
@@ -56,5 +58,34 @@ exports.default = class ScanInfo extends DBTable {
 
             return scan_info;
         }))
+    };
+
+    update = async () => {
+        const q = `
+            UPDATE user_scan_info 
+            SET 
+                updated_at = IF(scan_time is not NULL, now(), NULL),
+                scan_time = IF(scan_time is null, now(), scan_time),
+                status = IF(status = 0, 1, 1)
+            WHERE user_id = ? AND code = ?;
+        `;
+
+        const [rows] = await conn.query(q, [this.user_id, this.code]);
+        if (rows.affectedRows < 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    read = async () => {
+        const q = `
+            SELECT scan_time, status, updated_at
+            FROM user_scan_info
+            WHERE user_id = ? AND code = ?;
+        `;
+
+        const [rows] = await conn.query(q, [this.user_id, this.code]);
+        return rows;
     };
 }
