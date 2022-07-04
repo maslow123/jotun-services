@@ -18,7 +18,7 @@ exports.default = class ConfirmInvitation extends DBTable {
             INSERT INTO confirm_invitation
             (user_id, time)              
             VALUES
-            (?, TIMESTAMPADD(SECOND, 30, now()))              
+            (?, TIMESTAMPADD(SECOND, 0, now()))              
         `;
         const [rows] = await conn.query(q, this.user_id)
         if (rows.affectedRows < 1) {
@@ -29,7 +29,7 @@ exports.default = class ConfirmInvitation extends DBTable {
     
     update = async () => {
         let q = `
-            UPDATE confirm_invitation ci SET counter = counter + 1, time = TIMESTAMPADD(SECOND, 30, NOW())
+            UPDATE confirm_invitation ci SET counter = counter + 1, time = TIMESTAMPADD(SECOND, 120, NOW())
             WHERE user_id = (SELECT id FROM users WHERE phone_number = ?) and NOW() > time;
         `
         const [rows] = await conn.query(q, this.phone_number)

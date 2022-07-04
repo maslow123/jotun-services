@@ -13,8 +13,8 @@ exports.generateQRCode = async (phone_number, name) => {
     const filePath = path.join(`${process.cwd()}/assets/qr-code/`, `qr-${phone_number}.png`)
     return new Promise((resolve, reject) => {
         const opts = {
-            width: 200,
-            height: 200
+            width: 300,
+            height: 300
         };
 
         QRCode.toFile(

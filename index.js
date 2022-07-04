@@ -4,9 +4,11 @@ const cors = require('cors');
 const app = express();
 const logger = require('morgan');
 
+
 app.use(cors());
 app.use(express.json());
 app.use(logger('dev'));
+
 
 const users = require('./routes/users');
 const events = require('./routes/events');

@@ -9,7 +9,7 @@ exports.sendWhatsappMessage = async (imageURL, to, name) => {
   let bodyFormData = new URLSearchParams();
   // to = '6281901266101';
   bodyFormData.append('phone', to);
-  bodyFormData.append('caption', `Halo ${name}. Anda diundang untuk menghadiri JOTUN EVENT 2022 omamaolala.xyz`);
+  bodyFormData.append('caption', `Hi ${name}. Terima kasih telah berpartisipasi dalam acara JOTUN Family Day 2022. Harap bawa Kode QR ini saat kedatangan anda.`);
   bodyFormData.append('image', imageURL);
 
   try {

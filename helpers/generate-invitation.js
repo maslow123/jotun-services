@@ -1,5 +1,6 @@
 const fs = require('fs')
-const { createCanvas, loadImage } = require('canvas')
+const { createCanvas, loadImage } = require('canvas');
+const { DEPARTMENTS, BRANCHES } = require('./constants');
 
 exports.generateInvitation = async ({
     name, department, branches, phone_number
@@ -20,11 +21,11 @@ exports.generateInvitation = async ({
         },
         {
             field: 'Department',
-            value: department
+            value: DEPARTMENTS[department]
         },
         {
-            field: 'Kantor Cabang',
-            value: branches
+            field: 'Lokasi',
+            value: BRANCHES[branches]
         },
     ];
     const invitationPath = `${__dirname}/../assets/invitations/inv-${phone_number}.png`;
@@ -52,7 +53,7 @@ exports.generateInvitation = async ({
         // load QR Code
         await loadImage(`${__dirname}/../assets/qr-code/qr-${phone_number}.png`)
         .then(async img => {
-            context.drawImage(img, 800, 880, 300, 300)
+            context.drawImage(img, 750, 830, 350, 350)
         })
         const buffer = await canvas.toBuffer('image/png');
         fs.writeFileSync(invitationPath, buffer)
