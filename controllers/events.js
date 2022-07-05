@@ -1,5 +1,6 @@
 require('dotenv').config();
 const Event = require('../models/event').default;
+const SubEvent = require('../models/sub-event').default;
 const response = require('../helpers/response');
 
 const createEvent = async (req, res) => {
@@ -11,10 +12,18 @@ const createEvent = async (req, res) => {
         }     
         if(!category_age) {
             return response.falseRequirement(res, 'category_age');
-        }            
+        }        
+        if (!banner) {
+            return response.falseRequirement(res, 'banner');
+        }    
 
-        let event = new Event('', name, category_age);
+        let event = new Event('', name, category_age, banner);
         await event.create();       
+
+        // for tmp, auto create sub event for 1 rows
+        let sub_event = new SubEvent('', event.id, '2022-06-24 10:00:00', '2022-06-24 10:30:00', 99);
+        sub_event.create();
+
         return response.upsert(res, event, 'created');
     } catch (error) {
         console.error(error);

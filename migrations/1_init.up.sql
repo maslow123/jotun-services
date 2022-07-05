@@ -41,6 +41,7 @@ CREATE TABLE events (
     id int NOT NULL AUTO_INCREMENT,
     name VARCHAR (100),
     category_age VARCHAR(10),
+    banner VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
 );
 

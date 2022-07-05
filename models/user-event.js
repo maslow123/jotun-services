@@ -29,17 +29,17 @@ exports.default = class UserEvent extends DBTable {
             SELECT COUNT(1) count
             FROM user_events ue
             JOIN family f ON f.id = ue.family_id
-            WHERE f.user_id = ?
+            WHERE f.user_id = ? AND f.id = ?
         `;
         
-        const [rows] = await conn.query(q, [this.user_id]);
+        const [rows] = await conn.query(q, [this.user_id, this.family_id]);
         return rows[0].count;
     };
 
     getUserEvent = async () => {
         const q = `
             SELECT 
-                f.name, f.age                
+                f.id, f.name, f.age                
             FROM user_events ue
             JOIN family f ON f.id = ue.family_id 
             JOIN users u ON u.id = f.user_id 
