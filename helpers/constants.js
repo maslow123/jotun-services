@@ -37,8 +37,14 @@ const DEPARTMENTS = {
     '7': 'Marketing',
     '8': 'Powder Sales',
     '9': 'Protective',
-    '10': 'Supply Chain & Warehouse',
-    '11': 'TSS'
+    '10': 'Supply Chain',
+    '11': 'TSS',
+    '12': 'Factory Paints',
+    '13': 'Factory Powder',
+    '14': 'Maintenance',
+    '15': 'Management',
+    '17': 'QHSE',
+    '18': 'Warehouse',
 };
 
 const SCAN_CODE = {
