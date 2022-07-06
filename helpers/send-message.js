@@ -19,6 +19,9 @@ exports.sendWhatsappMessage = async (imageURL, to, name) => {
         'Authorization': process.env.WABLAS_API_KEY
       }
     });
+    console.log('Whatsapp success...', resp.data.message);
+    writeLogs(`Success send whatsapp message to ${to}\t[${resp.data.message}]`);
+
     return resp
   } catch(err) {
     console.log(err);
