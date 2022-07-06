@@ -43,7 +43,7 @@ const createUserEvent = async (req, res) => {
         const user_event = new UserEvent(user_id, family_id, sub_event_id);
         const alreadyRegistered = await user_event.checkChildrenRegistered();
         if (alreadyRegistered > 0) {
-            return response.error(res, 'childred-already-registerd');
+            return response.error(res, 'children-already-registered');
         }
 
         // insert to user events
