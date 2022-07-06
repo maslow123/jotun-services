@@ -16,6 +16,7 @@ exports.default = class Master extends DBTable {
         const q = `
             SELECT id, name 
             FROM ??
+            ORDER by name ASC
         `;
 
         const [rows] = await conn.query(q, this.table_name);
