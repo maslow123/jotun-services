@@ -25,4 +25,9 @@ exports.checkAgeIsValid = (categoryAge, childAge) => {
     categoryAge = Number(categoryAge);
 
     return (age === categoryAge);
-}
+};
+
+exports.uniqueID = () => {
+    const uid = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    return uid;
+};

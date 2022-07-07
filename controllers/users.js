@@ -3,7 +3,7 @@ const User = require('../models/user').default;
 const Family = require('../models/family').default;
 const ConfirmInvitation = require('../models/confirm-invitation').default;
 const ScanInfo = require('../models/scan-info').default;
-const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation, normalizedPhoneNumber } = require('../helpers');
+const { generateQRCode, uploadImage, sendWhatsappMessage, comparePassword, generateInvitation, normalizedPhoneNumber, uniqueID } = require('../helpers');
 const response = require('../helpers/response');
 const constants = require('../helpers/constants');
 const jwt = require('jsonwebtoken');
@@ -49,16 +49,17 @@ const createUser = async (req, res) => {
         let invitationURL = '';
 
         if (process.env.NODE_ENV !== 'test') {
+            const uid = uniqueID();
             // generate QR Code
-            const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name);
+            const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name, uid);
             
             // store qr image to bucket
             const qrImage = await uploadImage(qrFilePath, filename);
             qrCodeURL = qrImage.url;
             
             // generate invitation
-            const fileNameInvitation = `inv-${phone_number}.png`;
-            const invitationPath = await generateInvitation({ name, department, branches, phone_number });
+            const fileNameInvitation = `inv-${uid}.png`;
+            const invitationPath = await generateInvitation({ name, department, branches }, uid);
             // store e-invitation to bucket
             const invitationImage = await uploadImage(invitationPath, fileNameInvitation);
             invitationURL = invitationImage.url;
