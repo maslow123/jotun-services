@@ -4,6 +4,7 @@ const SubEvent = require('../models/sub-event').default;
 const Family = require('../models/family').default;
 const { checkAgeIsValid } = require('../helpers');
 const response = require('../helpers/response');
+const conn = require('./../models/index');
 
 const createUserEvent = async (req, res) => {
     try {     
@@ -32,6 +33,9 @@ const createUserEvent = async (req, res) => {
             return response.notFound(res, 'sub-event-not-found');
         }
         const subEvent = subEventData[0];
+        if (subEvent.slots < 1) {
+            return response.error(res, 'insufficient-slots');
+        }
 
         // check child age is qualify or not.
         const ageIsValid = checkAgeIsValid(subEvent.category_age, child.age);
@@ -46,10 +50,18 @@ const createUserEvent = async (req, res) => {
             return response.error(res, 'children-already-registered');
         }
 
+        await conn.query('BEGIN');
         // insert to user events
         await user_event.create();
+
+        // update slot event
+        await sub_events.updateSlots(subEvent.id);
+
+        await conn.query('COMMIT');
         return response.upsert(res, user_event, 'created');
     } catch (error) {
+        
+        await conn.query("ROLLBACK");
         console.error(error);
         response.internalError(res, error.message);
     }

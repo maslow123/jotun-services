@@ -39,22 +39,13 @@ exports.default = class SubEvent extends DBTable {
         return rows;
     };
 
-    updateSlots = async (listSubEventID) => {
-        let str = ``;
-        let counter = 0;
-        for (let id of listSubEventID) {
-            str += ` id = ${id}`;
-            if (counter !== listSubEventID.length - 1) {
-                str += ` OR `;
-                counter++;
-            }
-        }
+    updateSlots = async (subEventID) => {       
         const q = `
             UPDATE sub_events SET slots = slots - 1
-            WHERE ${str}
+            WHERE id = ?
         `;
 
-        const result = await conn.query(q);
+        const result = await conn.query(q, [subEventID]);
         return result;
     };
 
