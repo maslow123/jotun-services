@@ -27,9 +27,9 @@ const createUser = async (req, res) => {
         if(level === '' || level === undefined) {
             return response.falseRequirement(res, 'level');
         }
-        if(!family_list || family_list.length < 1) {
-            return response.falseRequirement(res, 'family_list');
-        }
+        // if(!family_list || family_list.length < 1) {
+        //     return response.falseRequirement(res, 'family_list');
+        // }
         if (
             (branches === constants.BRANCH_CODE.JAKARTA_AND_TANGERANG) &&
             !transportation
@@ -76,8 +76,10 @@ const createUser = async (req, res) => {
         user = new User('', name, phone_number, '', department, branches, transportation, 1, qrCodeURL, invitationURL, 0, 0); 
         await user.create();
         
-        const family = new Family('', user.id, family_list);
-        await family.create();
+        if (family_list.length > 0) {
+            const family = new Family('', user.id, family_list);
+            await family.create();
+        }
 
         const confirm_invitation = new ConfirmInvitation('', user.id, phone_number);
         await confirm_invitation.create();

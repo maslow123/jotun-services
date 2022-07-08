@@ -4,19 +4,37 @@ require('dotenv').config();
 const axios = require('axios').default;
 
 exports.sendWhatsappMessage = async (imageURL, to, name) => {    
-  const domain = process.env.WABLAS_DOMAIN;
+  const domain = process.env.TAPTALK_URL;
   
-  let bodyFormData = new URLSearchParams();
+  // let bodyFormData = new URLSearchParams();
   // to = '6281901266101';
-  bodyFormData.append('phone', to);
-  bodyFormData.append('caption', `Hi ${name}. Terima kasih telah berpartisipasi dalam acara JOTUN Family Day 2022. Harap bawa Kode QR ini saat kedatangan anda.`);
-  bodyFormData.append('image', imageURL);
+  // bodyFormData.append('phone', to);
+  // bodyFormData.append('caption', `Hi ${name}. Terima kasih telah berpartisipasi dalam acara JOTUN Family Day 2022. Harap bawa Kode QR ini saat kedatangan anda.`);
+  // bodyFormData.append('image', imageURL);
+
+  const channelID =  process.env.TAPTALK_CHANNEL_ID;
+  const phone = to;
+  const messageType = process.env.TAPTALK_CHANNEL_MESSAGE_TYPE;
+  const body = imageURL;
+  const caption = `Hi ${name}. Terima kasih telah berpartisipasi dalam acara JOTUN Family Day 2022. Harap bawa Kode QR ini saat kedatangan anda.`;
+
+  const apiKey = process.env.TAPTALK_API_KEY;
+
+  const payload = {
+    channelID,
+    phone,
+    messageType,
+    body,
+    caption,
+    withCase: true
+  };
 
   try {
-    const resp = await axios.post(`${domain}/api/send-image`, bodyFormData, {
+    const resp = await axios.post(
+      domain, 
+      payload, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': process.env.WABLAS_API_KEY
+        'API-KEY': apiKey
       }
     });
     console.log('Whatsapp success...', resp.data.message);
