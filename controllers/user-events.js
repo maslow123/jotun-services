@@ -77,8 +77,7 @@ const getUserEventBySubEventID = async (req, res) => {
         if (userEventData.length < 1) {
             return response.notFound(res, 'user-event-not-found');
         }   
-        const child = { ...userEventData[0] }
-        return response.success(res, child);
+        return response.success(res, userEventData);
     } catch(error) {
         console.error(error);
         return response.error(res, error.message)
