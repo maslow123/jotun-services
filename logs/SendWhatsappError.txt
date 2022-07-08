@@ -12,3 +12,4 @@ Senin, 4 Juli 2022 10.50.03 WIB-Error send whatsapp message to llxs
 [Jumat, 8 Juli 2022 17.27.16 WIB]:	Success send whatsapp message to 6287803824644	[undefined]
 [Jumat, 8 Juli 2022 17.29.54 WIB]:	Success send whatsapp message to 6287803824644	[undefined]
 [Jumat, 8 Juli 2022 17.33.07 WIB]:	Success send whatsapp message to 6287803824644	[undefined]
+[Jumat, 8 Juli 2022 17.49.50 WIB]:	Success send whatsapp message to 6287803824644	[undefined]
