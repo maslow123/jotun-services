@@ -16,7 +16,7 @@ exports.sendWhatsappMessage = async (imageURL, to, name) => {
   const phone = to;
   const messageType = process.env.TAPTALK_CHANNEL_MESSAGE_TYPE;
   const body = imageURL;
-  const caption = `Hi ${name}. Terima kasih telah berpartisipasi dalam acara JOTUN Family Day 2022. Harap bawa Kode QR ini saat kedatangan anda.`;
+  const caption = `Hi ${name}. Terima kasih telah berpartisipasi dalam acara JOTUN Family Day 2022. Harap bawa Kode QR ini saat kedatangan anda.\nhttps://bit.ly/3yRCr49`;
 
   const apiKey = process.env.TAPTALK_API_KEY;
 
