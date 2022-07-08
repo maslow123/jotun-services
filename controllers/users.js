@@ -48,7 +48,7 @@ const createUser = async (req, res) => {
         let qrCodeURL = '';   
         let invitationURL = '';
 
-        if (process.env.NODE_ENV !== 'test' &&( branches === constants.BRANCH_CODE.JAKARTA_AND_TANGERANG)) {
+        if (process.env.NODE_ENV !== 'test' && (branches === constants.BRANCH_CODE.JAKARTA_AND_TANGERANG)) {
             const uid = uniqueID();
             // generate QR Code
             const { filePath: qrFilePath, filename } = await generateQRCode(phone_number, name, uid);
