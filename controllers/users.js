@@ -76,7 +76,7 @@ const createUser = async (req, res) => {
         user = new User('', name, phone_number, '', department, branches, transportation, 1, qrCodeURL, invitationURL, 0, 0); 
         await user.create();
         
-        if (family_list.length > 0) {
+        if (family_list?.length > 0) {
             const family = new Family('', user.id, family_list);
             await family.create();
         }

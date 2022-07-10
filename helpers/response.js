@@ -77,6 +77,14 @@ exports.error = (res, err) => {
   });
 };
 
+exports.errorAl = (res, err, data) => {
+  res.status(422).json({
+    status: 422,
+    message: err,
+    data: data
+  });
+};
+
 exports.notAllowedInput = res => {
   res.status(401).send({
     status: 401,

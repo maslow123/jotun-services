@@ -37,17 +37,20 @@ const createUserEvent = async (req, res) => {
             return response.error(res, 'insufficient-slots');
         }
 
-        // check child age is qualify or not.
-        const ageIsValid = checkAgeIsValid(subEvent.category_age, child.age);
-        if (!ageIsValid) {
-            return response.falseRequirement(res, 'children-age');
-        }
-
         // check children already registered..
         const user_event = new UserEvent(user_id, family_id, sub_event_id);
         const alreadyRegistered = await user_event.checkChildrenRegistered();
         if (alreadyRegistered > 0) {
-            return response.error(res, 'children-already-registered');
+            return response.errorAl(res, 'children-already-registered', {
+                childName: child.name,
+                eventName: subEvent.event_name
+            });
+        }
+
+        // check child age is qualify or not.
+        const ageIsValid = checkAgeIsValid(subEvent.category_age, child.age);
+        if (!ageIsValid) {
+            return response.falseRequirement(res, 'children-age');
         }
 
         await conn.query('BEGIN');
