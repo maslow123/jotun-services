@@ -127,10 +127,11 @@ exports.maintenance = (res) => {
   });
 }
 
-exports.successScan = (res, state) => {
+exports.successScan = (res, state, data) => {
   res.status(200).send({
     status: 200,
     message: 'Success scan item',
-    state
+    state,
+    data
   })
 }

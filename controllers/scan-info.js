@@ -41,20 +41,20 @@ const updateScanInfo = async (req, res) => {
         } 
 
         // check valid children item
-        let valid = false;
+        let children = [];
         const family = new Family('', user_id);
         if (code === 'SNACK') {
             const startAge = 1;
             const endAge = 12;
-            valid = await family.checkValidChildren(startAge, endAge);    
+            children = await family.checkValidChildren(startAge, endAge);    
         }
         if (code === 'PAKET_SEKOLAH') {
             const startAge = 3;
             const endAge = 18;
-            valid = await family.checkValidChildren(startAge, endAge);            
+            children = await family.checkValidChildren(startAge, endAge);            
         }
-
-        if (!valid) {
+        
+        if (children.length < 1 && (code === 'SNACK' || code === 'PAKET_SEKOLAH')) {
             return response.invalid(res, 'children-age');
         }
 
@@ -64,7 +64,7 @@ const updateScanInfo = async (req, res) => {
             return response.error(res, 'something wrong');
         }     
         
-        return response.successScan(res, state);
+        return response.successScan(res, state, children);
     } catch (error) {
         console.error(error);
         response.internalError(res, error.message);
