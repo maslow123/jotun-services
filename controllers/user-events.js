@@ -53,18 +53,18 @@ const createUserEvent = async (req, res) => {
             return response.falseRequirement(res, 'children-age');
         }
 
-        await conn.query('BEGIN');
+        // await conn.query('BEGIN');
         // insert to user events
         await user_event.create();
 
         // update slot event
         await sub_events.updateSlots(subEvent.id);
 
-        await conn.query('COMMIT');
+        // await conn.query('COMMIT');
         return response.upsert(res, user_event, 'created');
     } catch (error) {
         
-        await conn.query("ROLLBACK");
+        // await conn.query("ROLLBACK");
         console.error(error);
         response.internalError(res, error.message);
     }

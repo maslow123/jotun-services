@@ -53,7 +53,8 @@ const SCAN_CODE = {
     'VOUCHER_BERMAIN': 'VOUCHER_BERMAIN',
     'SNACK': 'SNACK',
     'PAKET_SEKOLAH': 'PAKET_SEKOLAH',
-    'FOTO_VIDEO': 'FOTO_VIDEO',
+    'FOTO': 'FOTO',
+    'VIDEO': 'VIDEO'
 };
 
 module.exports = {

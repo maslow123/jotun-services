@@ -57,5 +57,21 @@ exports.default = class Family extends DBTable {
         
         const [rows] = await conn.query(q, [this.id, this.user_id]);         
         return rows;
+    };
+
+    checkValidChildren = async (startAge, endAge = null) => {
+        const q = `
+            SELECT COUNT(1) count FROM family
+            WHERE user_id = ? AND status != 0 AND (age <= ${endAge} AND age >= ${startAge})
+        `;
+
+        const [rows] = await conn.query(q, [this.user_id]);
+        const data = rows[0];
+
+        if (data.count) {
+            return true;
+        }
+
+        return false;
     }
 }

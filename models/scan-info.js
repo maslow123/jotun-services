@@ -38,7 +38,7 @@ exports.default = class ScanInfo extends DBTable {
     
     list = async () => {
         const q = `
-            SELECT id, user_id, name, scan_time, status
+            SELECT id, user_id, code, name, scan_time, status
             FROM user_scan_info
             WHERE user_id = ?
         `;
@@ -51,6 +51,7 @@ exports.default = class ScanInfo extends DBTable {
             const scan_info = new ScanInfo(
                 row.id,
                 row.user_id,
+                row.code,
                 row.name,
                 row.scan_time,
                 row.status
