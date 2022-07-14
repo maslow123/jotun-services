@@ -48,6 +48,8 @@ exports.default = class User extends DBTable {
             SELECT id, name, phone_number, password, department, branches, level, qr_code_url
             FROM users
             WHERE phone_number = ?
+            ORDER BY id desc
+            LIMIT 1
         `;
 
         const [rows] = await conn.query(q, [this.phone_number]);
@@ -131,5 +133,14 @@ exports.default = class User extends DBTable {
     updateUserAttend = async (isAttend) => {
         const q = `UPDATE users SET is_attend = ? WHERE phone_number = ?`;
         await conn.query(q, [isAttend, this.phone_number]);
+    }
+
+    updateUserImage = async () => {
+        const q = `
+            UPDATE users SET qr_code_url = ?, invitation_url = ?
+            WHERE id = ?
+        `;
+
+        await conn.query(q, [this.qr_code_url, this.invitation_url, this.id]);
     }
 }

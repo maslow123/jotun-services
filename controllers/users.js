@@ -48,6 +48,26 @@ const createUser = async (req, res) => {
         let qrCodeURL = '';   
         let invitationURL = '';
 
+        if (process.env.NODE_ENV === 'test') {
+            qrCodeURL = 'dummy_url.png';
+        }
+
+        
+        user = new User('', name, phone_number, '', department, branches, transportation, 1, qrCodeURL, invitationURL, 0, 0); 
+        await user.create();
+        
+        if (family_list?.length > 0) {
+            const family = new Family('', user.id, family_list);
+            await family.create();
+        }
+
+        const confirm_invitation = new ConfirmInvitation('', user.id, phone_number);
+        await confirm_invitation.create();
+
+        const scan_info = new ScanInfo('', user.id);
+        await scan_info.create();
+        
+        
         if (process.env.NODE_ENV !== 'test' && (Number(branches) === constants.BRANCH_CODE.JAKARTA_AND_TANGERANG)) {
             const uid = uniqueID();
             // generate QR Code
@@ -68,25 +88,12 @@ const createUser = async (req, res) => {
 
             await sendWhatsappMessage(invitationImage.url, to, name)            
         }
-        if (process.env.NODE_ENV === 'test') {
-            qrCodeURL = 'dummy_url.png';
-        }
 
-        
-        user = new User('', name, phone_number, '', department, branches, transportation, 1, qrCodeURL, invitationURL, 0, 0); 
-        await user.create();
-        
-        if (family_list?.length > 0) {
-            const family = new Family('', user.id, family_list);
-            await family.create();
-        }
+        user.qr_code_url = qrCodeURL;
+        user.invitation_url = invitationURL;
+        // update user image
+        await user.updateUserImage();
 
-        const confirm_invitation = new ConfirmInvitation('', user.id, phone_number);
-        await confirm_invitation.create();
-
-        const scan_info = new ScanInfo('', user.id);
-        await scan_info.create();
-        
         return response.upsert(res, user, 'created');
     } catch (error) {
         console.error(error);
