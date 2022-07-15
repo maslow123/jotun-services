@@ -1,15 +1,14 @@
 require('dotenv').config();
 const ScanInfo = require('../models/scan-info').default;
 const Family = require('../models/family').default;
+const User = require('../models/user').default;
 const response = require('../helpers/response');
 const jwt = require('jsonwebtoken');
 const constants = require('../helpers/constants');
 
 const updateScanInfo = async (req, res) => {
     try {        
-        const { key, code } = req.body;  
-        const { user_id } = req;       
-    
+        const { key, code } = req.body;      
         if(!key) {            
             return response.falseRequirement(res, 'key');
         }
@@ -17,40 +16,45 @@ const updateScanInfo = async (req, res) => {
         const decoded = jwt.verify(key, process.env.JWT_SECRET, {
             ignoreExpiration: true
         });
-        
         if (!decoded) {
             return response.falseRequirement(res, 'key');
         }
 
-        const { data } = decoded;
-        const { id } = data;
+        const { phone_number } = decoded;
 
-        if (user_id !== id) {
-            return response.falseRequirement(res, 'user');
-        }        
+        // get user data based on phone_number
+        const user = new User('', '', phone_number);
+        const isValid = await user.login();
+        if (!isValid) {
+            return response.errorScan(res, 'invalid-qr-code');
+        }
 
+        const data = {
+            user,
+            children: []
+        };
         // get scan items
-        const scan_info = new ScanInfo('', user_id, code);
+        const scan_info = new ScanInfo('', user.id, code);
         const items = await scan_info.list();
         if (items.length < 1) {
-            return response.notFound(res, 'items-not-found');
+            return response.errorScan(res, 'items-not-found');
         }
 
         if (code !== constants.SCAN_CODE.KEHADIRAN) {
             // check status kehadiran is scanned or not.
             const kehadiran = items.find(item => item.code === constants.SCAN_CODE.KEHADIRAN);
             if (kehadiran?.status === 0) {
-                return response.error(res, 'invalid-attendance');
+                return response.errorScan(res, 'invalid-attendance', data);
             }
         }
         const item = items.filter(item => item.code === code);
         if(item.length < 1) {
-            return response.falseRequirement(res, 'code');
+            return response.errorScan(res, 'invalid-code');
         } 
 
         // check valid children item
         let children = [];
-        const family = new Family('', user_id);
+        const family = new Family('', user.id);
         if (code === 'SNACK') {
             const startAge = 1;
             const endAge = 12;
@@ -63,16 +67,17 @@ const updateScanInfo = async (req, res) => {
         }
         
         if (children.length < 1 && (code === 'SNACK' || code === 'PAKET_SEKOLAH')) {
-            return response.invalid(res, 'children-age');
+            return response.errorScan(res, 'invalid-children-age', data);
         }
 
         const state = item[0].status === 1 ? 'update' : 'new';
         const isSuccess = await scan_info.update();
         if (!isSuccess) {
-            return response.error(res, 'something wrong');
+            return response.errorScan(res, 'something wrong');
         }     
         
-        return response.successScan(res, state, children);
+        data.children = children;    
+        return response.successScan(res, state, data);
     } catch (error) {
         console.error(error);
         response.internalError(res, error.message);

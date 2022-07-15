@@ -135,3 +135,11 @@ exports.successScan = (res, state, data) => {
     data
   })
 }
+
+exports.errorScan = (res, message, data) => {
+  res.status(422).send({
+    status: 422,
+    message,
+    data
+  })
+}
