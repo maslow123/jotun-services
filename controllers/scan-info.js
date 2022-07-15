@@ -3,6 +3,7 @@ const ScanInfo = require('../models/scan-info').default;
 const Family = require('../models/family').default;
 const response = require('../helpers/response');
 const jwt = require('jsonwebtoken');
+const constants = require('../helpers/constants');
 
 const updateScanInfo = async (req, res) => {
     try {        
@@ -35,6 +36,13 @@ const updateScanInfo = async (req, res) => {
             return response.notFound(res, 'items-not-found');
         }
 
+        if (code !== constants.SCAN_CODE.KEHADIRAN) {
+            // check status kehadiran is scanned or not.
+            const kehadiran = items.find(item => item.code === constants.SCAN_CODE.KEHADIRAN);
+            if (kehadiran?.status === 0) {
+                return response.error(res, 'invalid-attendance');
+            }
+        }
         const item = items.filter(item => item.code === code);
         if(item.length < 1) {
             return response.falseRequirement(res, 'code');

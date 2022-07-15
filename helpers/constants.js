@@ -54,7 +54,8 @@ const SCAN_CODE = {
     'SNACK': 'SNACK',
     'PAKET_SEKOLAH': 'PAKET_SEKOLAH',
     'FOTO': 'FOTO',
-    'VIDEO': 'VIDEO'
+    'VIDEO': 'VIDEO',
+    'FOTO_VIDEO': 'FOTO VIDEO'
 };
 
 module.exports = {
