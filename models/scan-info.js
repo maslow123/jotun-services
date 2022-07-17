@@ -33,7 +33,7 @@ exports.default = class ScanInfo extends DBTable {
                     (?, '${constants.SCAN_CODE.VIDEO}', 'VIDEO')
                 `;
 
-        const [rows] = await conn.query(q, [this.user_id, this.user_id, this.user_id, this.user_id, this.user_id, this.user_id ]);
+        const [rows] = await conn.query(q, [this.user_id, this.user_id, this.user_id, this.user_id, this.user_id, this.user_id, this.user_id ]);
         this.id = rows.insertId;
     };    
     
