@@ -4,6 +4,6 @@ const controllers = require('../controllers/schedules');
 const auth = require('../middlewares/auth');
 const slug = '/schedule';
 router.post(`${slug}/create`, controllers.createSchedules);
-router.get(`${slug}/list`, auth.verifyTokenMiddleware, controllers.getSchedules);
+router.get(`${slug}/list`, controllers.getSchedules);
 
 module.exports = router;
