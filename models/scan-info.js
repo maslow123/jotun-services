@@ -29,7 +29,8 @@ exports.default = class ScanInfo extends DBTable {
                     (?, '${constants.SCAN_CODE.VOUCHER_BERMAIN}', 'VOUCHER BERMAIN'),
                     (?, '${constants.SCAN_CODE.SNACK}', 'SNACK'),
                     (?, '${constants.SCAN_CODE.PAKET_SEKOLAH}', 'PAKET SEKOLAH'),
-                    (?, '${constants.SCAN_CODE.FOTO_VIDEO}', 'FOTO VIDEO')
+                    (?, '${constants.SCAN_CODE.FOTO}', 'FOTO'),
+                    (?, '${constants.SCAN_CODE.VIDEO}', 'VIDEO')
                 `;
 
         const [rows] = await conn.query(q, [this.user_id, this.user_id, this.user_id, this.user_id, this.user_id, this.user_id ]);
