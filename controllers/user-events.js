@@ -8,6 +8,7 @@ const conn = require('./../models/index');
 
 const createUserEvent = async (req, res) => {
     try {     
+        return response.error(res, 'Daftar lomba sudah ditutup');
         const { family_id, sub_event_id } = req.body;
         if (!family_id) {
             return response.falseRequirement(res, 'family_id');
