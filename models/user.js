@@ -1,4 +1,5 @@
 const DBTable = require('./dbtable').default;
+const Family = require('../models/family').default;
 const conn = require('./index');
 const { generatePassword } = require('../helpers');
 
@@ -142,5 +143,34 @@ exports.default = class User extends DBTable {
         `;
 
         await conn.query(q, [this.qr_code_url, this.invitation_url, this.id]);
+    };
+
+    list = async () => {
+        const q = `
+            SELECT u.id, u.phone_number, u.name, 
+            md.id department_id, md.name department_name,
+            mb.id branch_id, mb.name branch_name ,
+            mt.id transportation_id, mt.name transportation_name, 
+            u.qr_code_url , u.created_at 
+            FROM users u
+            LEFT JOIN master_departments md on md.id = u.department
+            LEFT JOIN master_branches mb on mb.id = u.branches
+            LEFT JOIN master_transportations mt on mt.id = u.transportation
+            group by u.phone_number 
+            having count(*) >= 1
+            order by u.name asc
+            LIMIT 1000
+        `;
+
+        const [rows] = await conn.query(q);       
+        let users = [];
+        for (let user of rows) {
+            const family = new Family('', user.id);
+            user.family = await family.list();
+
+            users = [...users, user];
+        }
+
+        return users;
     }
 }

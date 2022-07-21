@@ -39,7 +39,8 @@ exports.default = class UserEvent extends DBTable {
     getUserEvent = async () => {
         const q = `
             SELECT 
-                f.id, f.name, f.age                
+                f.id, f.name, f.age,
+                ue.start_time, ue.end_time                
             FROM user_events ue
             JOIN family f ON f.id = ue.family_id 
             JOIN users u ON u.id = f.user_id 

@@ -7,5 +7,6 @@ router.post(`${slug}/register`, controllers.createUser);
 router.post(`${slug}/login`, controllers.loginUser);
 
 router.get(`${slug}/qr-validate`, auth.verifyTokenMiddleware, auth.verifyHelpdeskPrevilege, controllers.qrValidate);
+router.get(`${slug}/list`, controllers.list);
 
 module.exports = router;

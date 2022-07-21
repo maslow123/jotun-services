@@ -177,10 +177,23 @@ const qrValidate = async (req, res) => {
         console.error(error);
         response.internalError(res, error.message);
     }
+};
+
+const list = async (req, res) => {
+    try {
+        const user = new User();
+        const users = await user.list();        
+
+        return response.success(res, users);
+    } catch(err) {
+        console.error(err);
+        response.internalError(res, err.message);
+    }
 }
 
 module.exports = {
     createUser,
     loginUser,
-    qrValidate
+    qrValidate,
+    list
 };
