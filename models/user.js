@@ -65,6 +65,27 @@ exports.default = class User extends DBTable {
         return true;
     };
 
+    loginHelpdesk = async () => {
+        const q = `
+            SELECT id, name, phone_number, password, department, branches, level, qr_code_url
+            FROM users
+            WHERE phone_number = ? AND level = 999
+            ORDER BY id desc
+            LIMIT 1
+        `;
+
+        const [rows] = await conn.query(q, [this.phone_number]);
+        if (rows.length < 1) {
+            return false;
+        }
+
+        const data = rows[0];
+        for(let fields of Object.keys(data)) {
+            this[fields] = data[fields];
+        }
+        return true;
+    }
+
     userAlreadyExists = async () => {
         const q = `
             SELECT COUNT(phone_number) count FROM users WHERE phone_number = ?
@@ -172,5 +193,19 @@ exports.default = class User extends DBTable {
         }
 
         return users;
+    };
+
+    update = async () => {
+        const q = `
+            UPDATE users 
+            SET name = ?, phone_number = ?, department = ?, branches = ?, transportation = ?
+            WHERE id = ?
+        `
+
+        try {
+            await conn.query(q, [this.name, this.phone_number, this.department, this.branches, this.transportation, this.id])
+        } catch(err) {
+            throw new Error(err)
+        }
     }
 }

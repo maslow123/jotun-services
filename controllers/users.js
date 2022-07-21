@@ -189,11 +189,99 @@ const list = async (req, res) => {
         console.error(err);
         response.internalError(res, err.message);
     }
+};
+
+const updateUser = async (req, res) => {
+    try {        
+        let { id, name, phone_number, department, branches, transportation, level, family_list } = req.body;  
+             
+        if (!id) {            
+            return response.falseRequirement(res, 'id');
+        }
+        if(!name) {
+            return response.falseRequirement(res, 'name');
+        }    
+        if(!phone_number) {
+            return response.falseRequirement(res, 'phone_number');
+        }
+        if(!department) {
+            return response.falseRequirement(res, 'department');
+        }
+        if(!branches) {
+            return response.falseRequirement(res, 'branches');
+        }
+        if(level === '' || level === undefined) {
+            return response.falseRequirement(res, 'level');
+        }
+        if (
+            (branches === constants.BRANCH_CODE.JAKARTA_AND_TANGERANG) &&
+            !transportation
+        ) {
+            return response.falseRequirement(res, 'transportation');
+        }
+
+        phone_number = normalizedPhoneNumber(phone_number);
+        
+        // update user
+        const user = new User(id, name, phone_number, '', department, branches, transportation, level, '', '', '', '');
+        await user.update();
+
+        if (family_list.length > 0) {
+            // update family
+            const family = new Family('', user.id, family_list);
+            await family.update();            
+        }
+        
+        return response.upsert(res, user, 'updated');
+    } catch (error) {
+        console.error(error);
+        response.internalError(res, error.message);
+    }
+};
+
+const loginHelpdesk = async (req, res) => {
+    try {
+        let { phone_number, password } = req.body;
+
+        if(!phone_number) {
+            return response.falseRequirement(res, 'phone_number');
+        }
+        /* 
+            If using password...
+        */
+        if(!password) {
+            return response.falseRequirement(res, 'password');
+        }
+
+        phone_number = normalizedPhoneNumber(phone_number);
+        const user = new User('', '', phone_number);
+        const isValid = await user.login();
+        if(!isValid) {
+            return response.loginFailed(res);
+        }
+        /* 
+            If using password...
+        */
+        const isValidPassword = await comparePassword(password, user.password);
+        if (!isValidPassword) {
+            return response.loginFailed(res);
+        }
+                
+        const token = jwt.sign({ data: user }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        return response.loginSuccess(res, user, token);
+
+
+    } catch(error) {        
+        console.error(error);
+        response.internalError(res, error.message);
+    }
 }
 
 module.exports = {
     createUser,
     loginUser,
     qrValidate,
-    list
+    list,
+    updateUser,
+    loginHelpdesk
 };

@@ -27,6 +27,7 @@ module.exports = {
         }
     },   
     verifyHelpdeskPrevilege: (req, res, next) => {
+        console.log(req.level);
         if (req.level === constants.ROLES.HELPDESK) { next() } 
         else {
             console.error(`no ${constants.ROLES.HELPDESK} previlege`)

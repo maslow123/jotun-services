@@ -1,6 +1,6 @@
 const ROLES = {
     USERS: 0,
-    HELPDESK: 1
+    HELPDESK: 999
 };
 
 const ATTEND = (name, state) => {

@@ -67,5 +67,42 @@ exports.default = class Family extends DBTable {
 
         const [rows] = await conn.query(q, [this.user_id]);
         return rows;
+    };
+
+    update = async () => {    
+        
+        for(let [i, row] of this.family_list.entries()) {            
+            // if data is exists but name is empty, delete it!
+            if (row.id && row.name ==='') {
+                const q = `
+                    DELETE FROM family where id = ?
+                `
+                await conn.query(q, row.id);
+                continue;
+            } else {
+                // if doesnt have id buat have name, create it!
+                if (!row.id && row.name) {
+                    const q = `
+                        INSERT INTO family
+                        (user_id, name, age, status)
+                        VALUE
+                        (?, ?, ?, ?)
+                    `;
+
+                    await conn.query(q, [this.user_id, row.name, row.age, i])
+                    continue;
+                }
+                // if have id and name, update it
+                if (row.id && row.name) {
+                    const q = `
+                        UPDATE family
+                        SET name = ?, age = ?
+                        WHERE id = ?
+                    `;
+                    await conn.query(q, [row.name, row.age, row.id]);
+                    continue;
+                }
+            }
+        }
     }
 }
