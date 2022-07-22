@@ -90,4 +90,18 @@ exports.default = class ScanInfo extends DBTable {
         const [rows] = await conn.query(q, [this.user_id, this.code]);
         return rows;
     };
+
+    list = async () => {
+        const q = `
+            SELECT 
+                usi.id, u.id uid, u.phone_number, u.name,
+                usi.code item, usi.scan_time , IF(usi.status = 0, 'Belum ditukar', 'Telah ditukar') status
+            FROM user_scan_info usi 
+            LEFT JOIN users u ON u.id = usi.user_id
+            ORDER BY user_id ASC;
+        `;
+
+        const [rows] = await conn.query(q);
+        return rows;
+    }
 }
