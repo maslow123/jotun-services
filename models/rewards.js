@@ -4,12 +4,16 @@ const conn = require('./index');
 exports.default = class Rewards extends DBTable {
     constructor(
         id = '', 
-        user_id = '',
-        item = ''
+        total = '',
+        item = '',
+        image_url = '',
+        document_url = ''
     ) {
         super(id);
-        this.user_id = user_id;        
+        this.total = total;
         this.item = item;
+        this.image_url = image_url;
+        this.document_url = document_url;
     }
 
     create = async () => {
@@ -26,7 +30,7 @@ exports.default = class Rewards extends DBTable {
     
     list = async () => {
         const q = `
-            SELECT id, user_id, item 
+            SELECT id, total, item, image_url, document_url 
             FROM rewards
         `;
 
@@ -34,14 +38,7 @@ exports.default = class Rewards extends DBTable {
         if (rows.length < 1) {
             return [];
         }
-        return await Promise.all(rows.map(async row => {
-            const rewards = new Rewards(
-                row.id,
-                row.user_id,
-                row.item
-            );
-
-            return rewards;
-        }))
+        
+        return rows;
     };
 }
