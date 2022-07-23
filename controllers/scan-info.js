@@ -167,7 +167,10 @@ const recapScanInfo = async (req, res) => {
             data.photo_scan_time = '';
             data.video_scan_time = '';
 
-            data.items.forEach(d => {
+            data.items.forEach(d => {                
+                if (d.scan_time) {
+                    d.scan_time.setHours(d.scan_time.getHours() + 7);
+                }
                 switch(d.item) {
                     case 'KEHADIRAN':
                         data.attend_scan_time = d.scan_time || '-';
